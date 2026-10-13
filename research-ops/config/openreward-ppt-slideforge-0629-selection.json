@@ -1,0 +1,40 @@
+{
+  "schema_version": "openreward.ppt.slideforge_selection.v1",
+  "source_batch": "example-batch",
+  "source_run_id": "example-run",
+  "tasks": [
+    {
+      "task_id": "example-ppt-001",
+      "selection_reason": "Synthetic schema example; not a recorded experiment."
+    },
+    {
+      "task_id": "example-ppt-002",
+      "selection_reason": "Synthetic schema example; not a recorded experiment."
+    },
+    {
+      "task_id": "example-ppt-003",
+      "selection_reason": "Synthetic schema example; not a recorded experiment."
+    },
+    {
+      "task_id": "example-ppt-004",
+      "selection_reason": "Synthetic schema example; not a recorded experiment."
+    },
+    {
+      "task_id": "example-ppt-005",
+      "selection_reason": "Synthetic schema example; not a recorded experiment."
+    },
+    {
+      "task_id": "example-ppt-006",
+      "selection_reason": "Synthetic schema example; not a recorded experiment."
+    },
+    {
+      "task_id": "example-ppt-007",
+      "selection_reason": "Synthetic schema example; not a recorded experiment."
+    },
+    {
+      "task_id": "example-ppt-008",
+      "selection_reason": "Synthetic schema example; not a recorded experiment."
+    }
+  ],
+  "public_example_notice": "Synthetic examples. Supply your own datasets and assets; this file is not experimental evidence."
+}

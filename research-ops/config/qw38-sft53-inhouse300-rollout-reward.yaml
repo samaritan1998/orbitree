@@ -1,0 +1,104 @@
+schema_version: "miaoda.rollout_reward_workflow.v1"
+pipeline_name: "demo-tuned-pipeline"
+
+runtime:
+  output_root: "/srv/research-ops/app/outputs/demo-tuned-pipeline"
+  supervisor_contract_file: "/srv/research-ops/app/config/qw38-sft53-supervisor-contract.json"
+  poll_interval_seconds: 30
+  service_timeout_seconds: 604800
+  rollout_timeout_seconds: 604800
+  teardown_timeout_seconds: 600
+  reward_timeout_seconds: 172800
+
+serving:
+  actual_job_name_env: "QW38_SFT53_LTP_JOB_NAME"
+  job_base: "demo-tuned-rollout"
+  ltp_user: "alice"
+  candidate_clusters:
+    - "cluster-a"
+    - "cluster-b"
+    - "cluster-c"
+    - "cluster-reserved-a"
+    - "cluster-reserved-b"
+    - "cluster-reserved-c"
+  requested_replicas: 1
+  min_ready_endpoints: 1
+  readiness_file: "/srv/research-ops/workspaces/alice/qianfan_coder/glm_post_train/sglang_logs/qw38-sft53-i300-0825-formal-r1/READINESS.json"
+  readiness_dir: "/srv/research-ops/workspaces/alice/qianfan_coder/glm_post_train/sglang_logs/qw38-sft53-i300-0825-formal-r1/readiness"
+  readiness_max_age_seconds: 86400
+  model_name: "demo-tuned-model"
+  gateway_control_url: "http://198.51.100.50:8070"
+  gateway_api_url: "http://198.51.100.51:8080"
+  model_api_key_env: "AGENTOS_MODEL_API_KEY"
+  expected_runtime:
+    tp_size: 8
+    dp_size: 1
+    context_length: 131072
+    cuda_graph_max_bs: 48
+    max_running_requests: 48
+  smoke:
+    prompt: "2+2等于几？只回答数字。"
+    max_tokens: 16
+    temperature: 0.0
+    chat_template_kwargs:
+      enable_thinking: true
+      preserve_thinking: true
+
+rollout:
+  datawheel_url: "http://198.51.100.250:80/api/v1/datawheel"
+  datawheel_token_env: "DATAWHEEL_TOKEN"
+  generated_user_id_env: "DATAWHEEL_GENERATED_USER_ID"
+  dataset_name: "example-app-300"
+  expected_records: 300
+  task_name: "eval-example-demo-tuned-pipeline"
+  task_name_postfix: "-maasdefault-Miaoda123"
+  environment: "evaluation"
+  query_mode: "deep_mode"
+  pipeline: "AgenticFirstCodingPipeline"
+  concurrency: 8
+  per_endpoint_concurrency: 8
+  configured_max_concurrency: 48
+  remaining_auto_retry_count: 3
+  selective_retry_rounds: 0
+  coding_config:
+    codingPromptiVariant: "qianfan-coder"
+    codingPromptiModelConfig:
+      provider: "openai"
+      api_url: "http://198.51.100.51:8080/v1/chat/completions"
+      model: "demo-tuned-model"
+      model_value: "demo-tuned-model"
+      api_key_env: "AGENTOS_MODEL_API_KEY"
+      max_tokens: 32000
+      min_p: 0
+      presence_penalty: 0
+      repetition_penalty: 1
+      temperature: 0.6
+      timeout: 600
+      top_k: 20
+      top_p: 0.95
+      thinking_config:
+        chat_template_kwargs:
+          enable_thinking: true
+          preserve_thinking: true
+
+teardown:
+  enabled: true
+  remove_gateway_model: true
+  delete_ltp_job: true
+
+reward:
+  enabled: true
+  goblin_url: "http://198.51.100.139:8118"
+  goblin_token_env: "GOBLIN_REWARD_API_TOKEN"
+  benchmark_dataset_name: "example-app-300"
+  rollout_model: "demo-tuned-model"
+  query_round: "first_round"
+  prompt_version: "v1_6"
+  reward_model: "gpt-5.5-agent"
+  concurrency: 50
+  eval_mm: true
+  eval_miniprog: true
+  timeout_seconds: 1200
+  max_retries: 1
+  pod_retry: 1
+  wait_for_completion: true

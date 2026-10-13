@@ -1,0 +1,184 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: openreward-ppt-reward
+  namespace: @@NAMESPACE@@
+  labels:
+    app.kubernetes.io/name: openreward-ppt-reward
+    app.kubernetes.io/part-of: research-ops
+    research-ops.work-id: harn-0001
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: openreward-ppt-reward
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: openreward-ppt-reward
+        app.kubernetes.io/part-of: research-ops
+        research-ops.work-id: harn-0001
+    spec:
+      automountServiceAccountToken: false
+      imagePullSecrets:
+        - name: @@IMAGE_PULL_SECRET@@
+      terminationGracePeriodSeconds: 30
+      containers:
+        - name: reward-adapter
+          image: @@PPT_IMAGE@@
+          imagePullPolicy: IfNotPresent
+          command:
+            - /bin/bash
+            - -lc
+          args:
+            - >-
+              exec python3 /opt/research-ops/scripts/run_slideforge_reward_adapter.py
+              --host 0.0.0.0 --port 9104
+          workingDir: /opt/research-ops
+          env:
+            - name: PYTHONPATH
+              value: /opt/research-ops/backend
+            - name: ORS_SLIDEFORGE_PIPELINE_ROOT
+              value: /opt/slideforge
+            - name: ORS_PPT_TASK_BUNDLE_ROOT
+              value: @@BUNDLE_ROOT@@
+            - name: ORS_PPT_ARTIFACT_ROOT
+              value: @@ARTIFACT_ROOT@@
+            - name: ORS_SLIDEFORGE_REWARD_WORK_ROOT
+              value: @@WORK_ROOT@@
+            - name: ORS_SLIDEFORGE_REWARD_REQUIRE_AUTH
+              value: "true"
+            - name: ORS_SLIDEFORGE_REWARD_MAX_CONCURRENCY
+              value: "1"
+            - name: ORS_SLIDEFORGE_REWARD_TIMEOUT_SECONDS
+              value: "5400"
+            - name: ORS_CCRELAY_CLAUDE_COMPAT_SCRIPT
+              value: /opt/research-ops/scripts/run_ccrelay_claude_compat.py
+            - name: ORS_SLIDEFORGE_REWARD_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: @@AUTH_SECRET@@
+                  key: rubric_token
+            - name: MDRW_LLM_ENDPOINT
+              value: @@MODEL_ENDPOINT@@
+            - name: MDRW_LLM_MODEL
+              value: @@MODEL_NAME@@
+            - name: MDRW_LLM_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: @@MODEL_SECRET@@
+                  key: @@MODEL_SECRET_KEY@@
+            - name: HTTP_PROXY
+              valueFrom:
+                secretKeyRef:
+                  name: @@PROXY_SECRET@@
+                  key: HTTP_PROXY
+            - name: HTTPS_PROXY
+              valueFrom:
+                secretKeyRef:
+                  name: @@PROXY_SECRET@@
+                  key: HTTPS_PROXY
+            - name: NO_PROXY
+              valueFrom:
+                secretKeyRef:
+                  name: @@PROXY_SECRET@@
+                  key: NO_PROXY
+            - name: http_proxy
+              valueFrom:
+                secretKeyRef:
+                  name: @@PROXY_SECRET@@
+                  key: http_proxy
+            - name: https_proxy
+              valueFrom:
+                secretKeyRef:
+                  name: @@PROXY_SECRET@@
+                  key: https_proxy
+          ports:
+            - name: http
+              containerPort: 9104
+              protocol: TCP
+          startupProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            periodSeconds: 5
+            timeoutSeconds: 2
+            failureThreshold: 60
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            periodSeconds: 10
+            timeoutSeconds: 2
+            failureThreshold: 3
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            periodSeconds: 30
+            timeoutSeconds: 3
+            failureThreshold: 3
+          resources:
+            requests:
+              cpu: "2"
+              memory: 8Gi
+            limits:
+              cpu: "4"
+              memory: 16Gi
+          securityContext:
+            allowPrivilegeEscalation: false
+          volumeMounts:
+            - name: research-ops-code
+              mountPath: /opt/research-ops
+              readOnly: true
+            - name: slideforge-code
+              mountPath: /opt/slideforge
+              readOnly: true
+            - name: task-bundles
+              mountPath: @@BUNDLE_ROOT@@
+              readOnly: true
+            - name: artifact-root
+              mountPath: @@ARTIFACT_ROOT@@
+            - name: reward-work
+              mountPath: @@WORK_ROOT@@
+      volumes:
+        - name: research-ops-code
+          hostPath:
+            path: @@RESEARCH_OPS_ROOT@@
+            type: Directory
+        - name: slideforge-code
+          hostPath:
+            path: @@SLIDEFORGE_ROOT@@
+            type: Directory
+        - name: task-bundles
+          hostPath:
+            path: @@BUNDLE_ROOT@@
+            type: Directory
+        - name: artifact-root
+          hostPath:
+            path: @@ARTIFACT_ROOT@@
+            type: DirectoryOrCreate
+        - name: reward-work
+          hostPath:
+            path: @@WORK_ROOT@@
+            type: DirectoryOrCreate
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: openreward-ppt-reward
+  namespace: @@NAMESPACE@@
+  labels:
+    app.kubernetes.io/name: openreward-ppt-reward
+    app.kubernetes.io/part-of: research-ops
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: openreward-ppt-reward
+  ports:
+    - name: http
+      port: 9104
+      targetPort: http
+      protocol: TCP

@@ -1,0 +1,201 @@
+{
+  "environments": {
+    "tooluse": {
+      "train": [
+        {
+          "benchmark_family": "toolathlon_gym",
+          "query": "I want to create a weekly meal plan for next week (March 9 to March 15, 2026) and set up a cooking schedule on my calendar. Please help me plan breakfast, lunch, and dinner for each day of the week.\n\nFor each meal, search for a suitable recipe. Try to get a variety of dishes throughout the week, mixing different cuisines and cooking styles. For breakfast, look for quick and easy options. For lunch, look for balanced meals. For dinner, look for heartier dishes.\n\nOnce you have selected all 21 recipes (3 meals per day for 7 days), please do the following:\n\nFirst, create calendar events for each cooking session. Each event should have a summary like \"Cook: [recipe name]\" and be scheduled at appropriate meal times: breakfast events at 7:00 AM, lunch events at 11:30 AM, and dinner events at 6:00 PM. Each cooking event should last 1 hour. Set the timezone to America/New_York.\n\nSecond, create an Excel file called \"Weekly_Meal_Plan.xlsx\" in the workspace with two sheets. The first sheet called \"Meal Plan\" should have columns for Day, Meal_Type, Recipe_Name, and Prep_Time (in minutes, estimate 15 for breakfast, 30 for lunch, 45 for dinner if not specified by the recipe). The second sheet called \"Shopping List\" should aggregate all unique ingredients across the week with columns Ingredient and Quantity (just list \"as needed\" for quantity if exact amounts are not available).",
+          "reward_spec": {
+            "evaluator": "official_task_script",
+            "terminal_action": "claim_done",
+            "type": "binary"
+          },
+          "source": {
+            "evaluator_sha256": "48ac5cefc04797dc7e4275f3b8fea5167b961f5eac3fdf0b0095214622ce228d",
+            "preprocess_sha256": "7ae68f86f55ed07fde8a5bb261bc39d4ca3f6943856bb7ef19d35e6742d3432b",
+            "repository": "EnvCommons/toolathlon-gym",
+            "revision": "9c82859d05bc1f0376150d749cd2e3d43471d583"
+          },
+          "task_id": "howtocook-meal-plan-gcal",
+          "task_name": "howtocook-meal-plan-gcal",
+          "tool_servers": [
+            "howtocook",
+            "google_calendar",
+            "excel",
+            "filesystem"
+          ]
+        },
+        {
+          "benchmark_family": "toolathlon_gym",
+          "query": "Our accounting team needs a tax summary report generated from our online store order data. Please retrieve all orders that have a status of either completed or processing from our e-commerce platform. For these orders, compile a tax summary that breaks down the data by the billing state of each customer.\n\nCreate an Excel file called Tax_Summary_Report.xlsx in the workspace with two sheets. The first sheet should be named \"By State\" and should contain the following columns: State, Order Count, Total Sales, and Total Tax. List each billing state that appears in the qualifying orders, sorted by total tax in descending order so the highest tax states appear first. All monetary values should be rounded to two decimal places. The second sheet should be named \"Overall\" and should contain two columns called Metric and Value with the following four rows: Total Orders with the count of all qualifying orders, Total Sales with the sum of all order totals, Total Tax with the sum of all tax amounts, and Effective Tax Rate with the overall tax as a percentage of total sales rounded to two decimal places.\n\nIn addition to the Excel file, create a shared spreadsheet titled \"Tax Summary for Accounting\" so the accounting team can access the data online. This spreadsheet should have a single sheet named \"Summary\" containing the same Overall data with the Metric and Value columns and the same four rows as the Overall sheet in the Excel file.",
+          "reward_spec": {
+            "evaluator": "official_task_script",
+            "terminal_action": "claim_done",
+            "type": "binary"
+          },
+          "source": {
+            "evaluator_sha256": "32b0e75c9881056ae6d8492f3ca5ae6fbd82570fe6331680b0e16452d1a62713",
+            "preprocess_sha256": "f0b141172dd6489cf0400993bdfcca9d7840ade20d70710422611a6dbda71141",
+            "repository": "EnvCommons/toolathlon-gym",
+            "revision": "9c82859d05bc1f0376150d749cd2e3d43471d583"
+          },
+          "task_id": "wc-sales-tax-summary",
+          "task_name": "wc-sales-tax-summary",
+          "tool_servers": [
+            "woocommerce",
+            "excel",
+            "google_sheet",
+            "filesystem"
+          ]
+        },
+        {
+          "benchmark_family": "toolathlon_gym",
+          "query": "The university registrar's office needs a comprehensive enrollment overview across all courses in the learning management system. Please retrieve the list of all courses and then gather enrollment data for each course, counting how many students, teachers, and teaching assistants are enrolled in each one. The enrollment type can be determined from the enrollment role where student enrollments, teacher enrollments, and TA enrollments should each be counted separately.\n\nAfter collecting all the enrollment data, create a database in the project management workspace titled \"Course Enrollment Tracker\" to serve as a centralized tracking board. Each course should have its own entry in this database. The properties for each entry should include the course name as the title, and additional properties for Student_Count, Teacher_Count, TA_Count, and Total_Enrollment where the total is the sum of students, teachers, and TAs.\n\nFinally, send an email to admin@university.example.com with the subject \"Course Enrollment Summary Report\". The body of the email should include the total number of courses, the overall total enrollment across all courses, and a brief listing of the top five courses by total enrollment showing each course name and its total enrollment count.",
+          "reward_spec": {
+            "evaluator": "official_task_script",
+            "terminal_action": "claim_done",
+            "type": "binary"
+          },
+          "source": {
+            "evaluator_sha256": "fa87824c0549fbe9b631bfa351b9fa7ddd26282033c9c1fec3ddc60aaa0ab6dd",
+            "preprocess_sha256": "0dfd64742b2fc019d312286a19ea5eb8e5b758740a6b9ce06ae455a7a09b2407",
+            "repository": "EnvCommons/toolathlon-gym",
+            "revision": "9c82859d05bc1f0376150d749cd2e3d43471d583"
+          },
+          "task_id": "canvas-enrollment-notion",
+          "task_name": "canvas-enrollment-notion",
+          "tool_servers": [
+            "canvas",
+            "notion",
+            "emails",
+            "filesystem"
+          ]
+        },
+        {
+          "benchmark_family": "toolathlon_gym",
+          "query": "I need you to build a stock volatility and risk comparison report for my portfolio. I hold positions in five stocks: AMZN, GOOGL, JNJ, JPM, and XOM, and I need to understand how volatile each one has been over the past year and how they compare against their sector benchmarks.\n\nStart by pulling the last 1 year of daily closing prices for each of those five stocks from our financial data service. The date range I care about is roughly 2025-03-06 through 2026-03-05, which should give about 252 trading days per stock.\n\nThere is a research portal running at http://localhost:30152 that has sector volatility benchmarks and risk category thresholds. Please visit that page and grab the benchmark annualized volatility for each sector and the maximum drawdown thresholds that define Conservative, Moderate, and Aggressive risk categories.\n\nOnce you have all the price data and the benchmark information, calculate the following for each stock. Annualized volatility should be computed as the standard deviation of daily log returns multiplied by the square root of 252 and then multiplied by 100 to express it as a percentage, rounded to 2 decimal places. Maximum drawdown over the year should be calculated as the largest peak-to-trough decline expressed as a positive percentage rounded to 2 decimal places. One-year return percentage is simply the percentage change from the first closing price to the last closing price in the period, rounded to 2 decimal places. Each stock should be classified into a risk category (Conservative, Moderate, or Aggressive) based on its maximum drawdown using the thresholds from the research portal.\n\nUse the terminal to run Python for your data processing and calculations. The sector mappings for these stocks are AMZN in Consumer Cyclical, GOOGL in Communication Services, JNJ in Healthcare, JPM in Financial Services, and XOM in Energy. You can verify these through the financial data service if you like.\n\nCreate an Excel file called stock_volatility_report.xlsx in the workspace with three sheets. The first sheet should be called \"Risk Analysis\" with the following columns: Symbol, Sector, Annualized_Volatility, Sector_Benchmark_Vol, Vol_vs_Benchmark (which should say \"Above\" if the stock volatility is greater than the sector benchmark and \"Below\" otherwise), Max_Drawdown, Risk_Category, One_Year_Return_Pct. All numeric values should be rounded to 2 decimal places and the rows should be sorted alphabetically by Symbol.\n\nThe second sheet should be called \"Daily Returns\" and should contain columns Symbol, Date, Close_Price, and Daily_Return_Pct. Date should be formatted as YYYY-MM-DD. Include all trading days for all five stocks sorted first by Symbol and then by Date. The daily return percentage for the first day of each stock should be left empty or set to zero since there is no prior day to compare against.\n\nThe third sheet should be called \"Summary\" with a two-column layout where column A has the label and column B has the value. Include these metrics: Highest_Volatility_Stock (the symbol with the highest annualized volatility), Lowest_Volatility_Stock (the symbol with the lowest annualized volatility), Avg_Annualized_Volatility (the average across all five stocks rounded to 2 decimal places), Stocks_Above_Benchmark (the count of stocks whose volatility exceeds their sector benchmark), Max_Drawdown_Worst (the largest maximum drawdown value among all five stocks rounded to 2 decimal places), and Safest_Stock (the symbol with the lowest maximum drawdown).",
+          "reward_spec": {
+            "evaluator": "official_task_script",
+            "terminal_action": "claim_done",
+            "type": "binary"
+          },
+          "source": {
+            "evaluator_sha256": "72e0e24a7a987e8e09c018d9408064d0b8af2e659a54c90aaf5f24babbf14c15",
+            "preprocess_sha256": "c4d76fc233d24e2bb338088a5ad8300073e157181f714da23251e953abbb2f2b",
+            "repository": "EnvCommons/toolathlon-gym",
+            "revision": "9c82859d05bc1f0376150d749cd2e3d43471d583"
+          },
+          "task_id": "yf-stock-volatility-terminal",
+          "task_name": "yf-stock-volatility-terminal",
+          "tool_servers": [
+            "yahoo-finance",
+            "playwright_with_chunk",
+            "fetch",
+            "excel",
+            "filesystem",
+            "terminal"
+          ]
+        },
+        {
+          "benchmark_family": "toolathlon_gym",
+          "query": "You are helping a researcher prepare for an upcoming academic conference on Reinforcement Learning from Human Feedback (RLHF). The conference is called \"RLHF Summit 2026\" and will take place on April 10, 2026 from 9:00 AM to 5:00 PM at the San Francisco Convention Center.\n\nFirst, search the academic paper databases for papers related to \"reinforcement learning from human feedback\". You should find at least 5 relevant papers. Exclude any papers that are not directly about RLHF or human feedback in the context of language model training (for example, papers about self-play in board games should be excluded).\n\nFor each of the relevant RLHF papers you find, retrieve the full manuscript source to examine their methodology sections in detail. Pay attention to the key techniques each paper introduces.\n\nNext, create a PowerPoint presentation called RLHF_Conference_Report.pptx in your workspace. The presentation should include the following slides:\n\nFirst, a title slide with the title \"RLHF Summit 2026 Conference Preparation Report\" and subtitle \"Key Papers in Reinforcement Learning from Human Feedback\".\n\nFirst, an overview slide that introduces the field of RLHF and why it matters for language model alignment.\n\nFirst, one slide for each of the relevant papers (at least 5 slides). Each paper slide should include the paper title, the authors, and a brief summary of the key contribution and methodology. Make sure to include papers about instruction following with human feedback, learning to summarize from human feedback, constitutional AI, direct preference optimization, and proximal policy optimization.\n\nFirst, a summary slide that synthesizes the key themes across all papers.\n\nAfter creating the presentation, create a calendar event for the RLHF Summit 2026 conference. The event should be on April 10, 2026 from 9:00 AM to 5:00 PM, with the location set to \"San Francisco Convention Center\" and a description that mentions this is a conference about reinforcement learning from human feedback.\n\nFinally, send an email to your collaborators at collaborators@rlhf-lab.org with the subject \"RLHF Summit 2026 Preparation Materials\". The email body should briefly describe that you have prepared a conference report covering key RLHF papers and created a calendar event for the conference. Mention the date (April 10, 2026) and location in the email.",
+          "reward_spec": {
+            "evaluator": "official_task_script",
+            "terminal_action": "claim_done",
+            "type": "binary"
+          },
+          "source": {
+            "evaluator_sha256": "18adce7acdf4756fad859759dea24a13a4fc54e617535304e8488356a615f44b",
+            "preprocess_sha256": "65fe4f44a09e1ed2e2fb06ac87f28668b59d2de41343d8f29da04c68a49144a0",
+            "repository": "EnvCommons/toolathlon-gym",
+            "revision": "9c82859d05bc1f0376150d749cd2e3d43471d583"
+          },
+          "task_id": "arxiv-conference-prep",
+          "task_name": "arxiv-conference-prep",
+          "tool_servers": [
+            "scholarly",
+            "arxiv-latex",
+            "pptx",
+            "google_calendar",
+            "emails",
+            "filesystem"
+          ]
+        },
+        {
+          "benchmark_family": "toolathlon_gym",
+          "query": "You are a business consultant planning a same-day round trip between Beijing and Shanghai for an important client meeting. Your workspace contains a trip configuration file called trip_config.json and a travel guide file called travel_guide.md. You also have access to a rail ticketing system, a shared calendar, a team knowledge base, a document editor, and an email service.\n\nBegin by getting the current date from the rail ticketing system. Then look up the station codes for Beijing and Shanghai. Using those codes, query available high-speed trains departing from the Beijing South station to Shanghai Hongqiao on March 10, 2026. Also query trains going in the reverse direction, from Shanghai Hongqiao to Beijing South, on the same date. Review your shared calendar to check what events are already scheduled on March 10, 2026, so you can understand the full day context.\n\nFrom the outbound trains, select the one with the earliest arrival time in Shanghai that still gives a reasonable departure hour from Beijing. The goal is to arrive in Shanghai as early as possible in the afternoon to prepare for the client meeting. From the return trains, select a train that departs Shanghai in the morning so you can return to Beijing by early afternoon. For both selected trains, retrieve the full list of intermediate stops along the route. Also check the seat availability and ticket prices for second-class seats on each train.\n\nOnce you have identified both trains, create a new page in your team knowledge base titled \"Beijing-Shanghai Business Trip - March 10\" and record the key trip details there, including train numbers, departure and arrival times, durations, and the seat class selected.\n\nNext, create a Word document called Travel_Plan.docx in your workspace. This document should have a main heading titled \"Beijing-Shanghai Business Trip Travel Plan\". It should contain three clearly labeled sections. The first section should be titled \"Outbound Journey\" and describe the selected outbound train with its number, departure time, arrival time, and travel duration. The second section should be titled \"Return Journey\" and describe the selected return train with the same details. The third section should be titled \"Booking Summary\" and list the ticket costs: the second-class fare for the outbound trip, the second-class fare for the return trip, and the combined total cost for both tickets. Each section should include a small table with the train details.\n\nAfter creating the document, add two calendar events. The first event should be titled \"Business Trip - Beijing to Shanghai\" and should cover the travel window on March 10, 2026, starting 30 minutes before the outbound train departure and ending 30 minutes after the outbound train arrival in Shanghai. The second event should be titled \"Business Trip - Return to Beijing\" and should cover the return journey window on March 10, 2026.\n\nFinally, send an email to travel@consulting.com. The email should summarize the trip plan, mention the names of the two selected trains, confirm the travel date, and reference the attached Travel_Plan.docx document. The subject line should clearly indicate this is a business trip travel confirmation.",
+          "reward_spec": {
+            "evaluator": "official_task_script",
+            "terminal_action": "claim_done",
+            "type": "binary"
+          },
+          "source": {
+            "evaluator_sha256": "3179da9b95a814a3dd59d852012d07e9a14f627c8b31fae300cb36939f00174b",
+            "preprocess_sha256": "0b423b95b270a321019305b449db2802ba89d6b8d4ae0b0fa1d7c1d70a32c090",
+            "repository": "EnvCommons/toolathlon-gym",
+            "revision": "9c82859d05bc1f0376150d749cd2e3d43471d583"
+          },
+          "task_id": "12306-beijing-shanghai-trip-notion-gcal-word",
+          "task_name": "12306-beijing-shanghai-trip-notion-gcal-word",
+          "tool_servers": [
+            "rail_12306",
+            "notion",
+            "google_calendar",
+            "emails",
+            "word"
+          ]
+        },
+        {
+          "benchmark_family": "toolathlon_gym",
+          "query": "The HR leadership team wants to identify departments that may be at risk of employee attrition due to low job satisfaction. Please query the HR analytics database to calculate the average job satisfaction score and average work-life balance score for each department, along with the employee count and average performance rating. Sort the results by average satisfaction score in ascending order to identify the departments with the lowest morale.\n\nCreate an Excel file named Satisfaction_Report.xlsx in the workspace with two sheets. The first sheet should be named \"Department Scores\" and should contain all seven departments with columns Department, Employee_Count, Avg_Satisfaction, Avg_Work_Life_Balance, and Avg_Performance, with values rounded to two decimal places where applicable. Sort the rows by Avg_Satisfaction in ascending order. The second sheet should be named \"Action Items\" and should list only the bottom three departments by satisfaction score, with columns Department, Avg_Satisfaction, and Status where the status for each should be set to \"Needs Review\".\n\nFor each of the three departments identified as needing review, schedule a one-hour calendar event titled \"HR Review - \" followed by the department name. These meetings should be scheduled on March 16, 2026, starting at 9:00 AM, 10:30 AM, and 12:00 PM respectively in the America/New_York time zone. Each event description should mention the department name and its average satisfaction score.\n\nAfter scheduling the meetings, send an email to hr-director@company.example.com with the subject \"Department Satisfaction Review Summary\". The email body should list all seven departments with their average satisfaction scores and highlight which three departments have been flagged for review, along with the scheduled meeting dates.",
+          "reward_spec": {
+            "evaluator": "official_task_script",
+            "terminal_action": "claim_done",
+            "type": "binary"
+          },
+          "source": {
+            "evaluator_sha256": "e2e37781657b6850106b70107dc63f75f5d7bc18dd8f5f80849859fb6484107d",
+            "preprocess_sha256": "b98a0569500639554da64ff30caf38ecd0848b51945ddf67d93a23af55b229bf",
+            "repository": "EnvCommons/toolathlon-gym",
+            "revision": "9c82859d05bc1f0376150d749cd2e3d43471d583"
+          },
+          "task_id": "sf-hr-attrition-gcal",
+          "task_name": "sf-hr-attrition-gcal",
+          "tool_servers": [
+            "snowflake",
+            "google_calendar",
+            "emails",
+            "excel",
+            "filesystem"
+          ]
+        },
+        {
+          "benchmark_family": "toolathlon_gym",
+          "query": "I'm the department head and we have a curriculum committee meeting coming up where we need to discuss which of our Fall 2014 assignments are actually effective at differentiating student performance. I've put together an Assessment Standards PDF in your workspace that explains the discrimination index methodology we want to use -- please read through that first.\n\nWhat I need you to do is pull all the course and assignment data from our learning management system for the Fall 2014 term (those are the courses with codes ending in 2014J). For each assignment, I need you to compute the discrimination index following the methodology in the PDF -- basically rank students by their overall course average, take the top and bottom 27%, and see how differently they perform on each assignment. Also compute completion rates, mean scores, and score spread.\n\nCreate an Excel file called Assessment_Effectiveness.xlsx with three sheets. The first sheet should be called \"Assignment Metrics\" with columns Course_Name (sorted alphabetically), Assignment_Name, Points_Possible, Submission_Count, Completion_Rate (round to 1 decimal), Mean_Score (round to 1 decimal), Score_Std_Dev (round to 1 decimal), Discrimination_Index (round to 3 decimals), and Effectiveness (Good if DI above 0.3, Acceptable if between 0.15 and 0.3, Poor if below 0.15). The second sheet \"Course Summary\" should have Course_Name (sorted), Total_Assignments, Good_Count, Acceptable_Count, Poor_Count, Avg_Completion_Rate (round to 1), and Avg_DI (round to 3). The third sheet \"Revision Needed\" should list only assignments that are rated Poor or have completion below 70 percent, with columns Course_Name, Assignment_Name, Current_DI, Completion_Rate, Issue (Low DI, Low Completion, or both separated by slash), and Priority (High if both issues, Medium if one). Sort this sheet by Priority descending then DI ascending.\n\nThen build a PowerPoint presentation called Curriculum_Review.pptx for the committee with at least 6 slides covering a title slide, methodology overview, overall results summary, best performing assignments, assignments needing revision, and recommendations.\n\nI also need you to create a Notion database called \"Assignment Improvement Tracker\" to track follow-up actions. It should have these properties: Assignment (title), Course (select), Current_DI (number), Target_DI (number), Status (select with options Pending, In Progress, Completed), and Owner (rich_text). Add an entry for every assignment from the Revision Needed list, setting Status to Pending and Target_DI to 0.4.\n\nFinally, send an email to curriculum_committee@university.edu with the subject \"Fall 2014 Assignment Effectiveness Analysis\" summarizing the key findings -- how many assignments were analyzed, the breakdown by effectiveness category, how many need revision, and which courses have the most concerning patterns.",
+          "reward_spec": {
+            "evaluator": "official_task_script",
+            "terminal_action": "claim_done",
+            "type": "binary"
+          },
+          "source": {
+            "evaluator_sha256": "f559a5e60d108fbce267464fee9fa04b78ba98df087db790317e4dfa11a6c806",
+            "preprocess_sha256": "f65a668d0d37eb210d0642fc9b50861d638aa6e8dc20adcb0612b8c33dfb8860",
+            "repository": "EnvCommons/toolathlon-gym",
+            "revision": "9c82859d05bc1f0376150d749cd2e3d43471d583"
+          },
+          "task_id": "canvas-assignment-effectiveness-ppt-notion-email",
+          "task_name": "canvas-assignment-effectiveness-ppt-notion-email",
+          "tool_servers": [
+            "canvas",
+            "pdf-tools",
+            "pptx",
+            "notion",
+            "emails",
+            "terminal",
+            "filesystem"
+          ]
+        }
+      ]
+    }
+  }
+}

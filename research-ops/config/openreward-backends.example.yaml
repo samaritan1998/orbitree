@@ -1,0 +1,105 @@
+version: 1
+
+# Miaoda does not need a new runtime image.  Datawheel owns the worker/SDK and
+# AgentOS runtime; Goblin owns the evaluator image.  Only endpoint/identity
+# references and an accessible result location are required here.
+miaoda:
+  adapter: datawheel-agentos-goblin
+  environment: evaluation
+  datawheel_base_url_env: ROPS_AGENTOS_DATAWHEEL_BASE_URL
+  datawheel_token_env: DATAWHEEL_TOKEN
+  generated_user_id_env: DATAWHEEL_GENERATED_USER_ID
+  policy_model_name_env: MOPD_POLICY_MODEL_NAME
+  policy_model_api_url_env: MOPD_POLICY_API_URL
+  policy_model_api_key_env: AGENTOS_MODEL_API_KEY
+  goblin_base_url_env: ROPS_GOBLIN_BASE_URL
+  goblin_token_env: GOBLIN_REWARD_API_TOKEN
+  # The ORS pod and Goblin worker do not share a filesystem.  Use Goblin's
+  # multipart upload endpoint so the completed Datawheel workbook crosses the
+  # service boundary explicitly.  ``shared_path`` remains available only for
+  # deployments with a genuinely shared result root.
+  goblin_result_access: download_url
+  goblin_result_location_env: GOBLIN_REWARD_RESULT_ROOT
+  join_fields:
+    - episode_id
+    - case_id
+    - app_id
+    - 跑批单条记录id
+  success_agent_states:
+    - finished
+  boundary_agent_states:
+    - awaiting_user_input
+
+# The trusted sidecar owns Docker; policy/verifier containers receive neither
+# the Docker socket nor host mounts. Submission is verified in a second clean
+# container with the official SWE-bench harness.
+swe:
+  adapter: sandbox
+  runtime_mode: service
+  runtime_ref_env: ORS_SWE_SANDBOX_URL
+  auth_envs:
+    - ORS_SWE_SANDBOX_TOKEN
+  workspace_mount: /testbed
+  create_operation: POST /v1/sandboxes
+  exec_operation: POST /v1/sandboxes/{sandbox_id}/exec
+  read_operation: POST /v1/sandboxes/{sandbox_id}/files/read
+  write_operation: POST /v1/sandboxes/{sandbox_id}/files/write
+  destroy_operation: DELETE /v1/sandboxes/{sandbox_id}
+  verifier_operation: POST /v1/sandboxes/{sandbox_id}/verify
+  patch_output: unified_diff
+  # Must exceed ORS_SWE_VERIFY_SECONDS because submit is a synchronous terminal
+  # OpenReward action even though the sidecar uses a separate verifier container.
+  timeout_seconds: 2100
+  verify_tls: true
+  trust_env: false
+
+# The PPT runtime must preserve a .pptx artifact and produce slide images.  A
+# service URL can be replaced by an image env by changing runtime_mode.
+ppt:
+  adapter: office-runtime
+  runtime_mode: service
+  runtime_ref_env: ORS_PPT_RUNTIME_URL
+  auth_envs:
+    - ORS_PPT_RUNTIME_TOKEN
+  workspace_mount: /workspace
+  create_operation: POST /v1/presentations
+  exec_operation: POST /v1/presentations/{session_id}/exec
+  file_read_operation: POST /v1/presentations/{session_id}/files/read
+  file_write_operation: POST /v1/presentations/{session_id}/files/write
+  file_edit_operation: POST /v1/presentations/{session_id}/files/edit
+  read_operation: POST /v1/presentations/read
+  write_operation: POST /v1/presentations/write
+  render_operation: POST /v1/presentations/render
+  submit_operation: POST /v1/presentations/verify
+  destroy_operation: DELETE /v1/presentations/{session_id}
+  artifact_extensions:
+    - .pptx
+  render_extensions:
+    - .png
+  # submit_deliverable blocks through the full SlideForge LLM/VLM evaluation.
+  # Keep this above ORS_PPT_RUBRIC_TIMEOUT_SECONDS (5400 seconds).
+  timeout_seconds: 5700
+  verify_tls: true
+  trust_env: false
+
+# ToolUse needs a resettable task session.  The model sees only registered
+# schemas; service credentials remain behind the ORS backend.
+tooluse:
+  # EnvCommons/ToolathlonGym already speaks ORS. Research Ops proxies its
+  # prompt, task-specific tools, session lifecycle and claim_done reward.
+  adapter: openreward-proxy
+  service_base_url_env: ORS_TOOLUSE_SERVICE_URL
+  remote_environment: toolathlongym
+  # The reviewed upstream server has no built-in authentication. Keep it on a
+  # private interface, or add an authenticated reverse proxy and list that
+  # proxy's token environment reference here.
+  auth_envs: []
+  registry_operation: GET /v1/tasks/{task_id}/tools
+  reset_operation: POST /v1/tasks/{task_id}/sessions
+  invoke_operation: POST /v1/sessions/{session_id}/tools/{tool_name}
+  state_operation: GET /v1/sessions/{session_id}/state
+  verifier_operation: POST /v1/sessions/{session_id}/verify
+  destroy_operation: DELETE /v1/sessions/{session_id}
+  timeout_seconds: 120
+  verify_tls: true
+  trust_env: false

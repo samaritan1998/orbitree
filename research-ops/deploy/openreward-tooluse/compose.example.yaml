@@ -1,0 +1,11 @@
+services:
+  toolathlon-gym:
+    image: ${ORS_TOOLUSE_IMAGE:-research-ops/toolathlon-gym:9c82859d}
+    ports:
+      - "127.0.0.1:9102:8080"
+    shm_size: "1gb"
+    pids_limit: 4096
+    mem_limit: 16g
+    cpus: 4
+    restart: unless-stopped
+

@@ -1,0 +1,65 @@
+# Secrets and machine-local configuration
+**/.env
+**/.env.*
+!**/.env.example
+**/.npmrc
+**/*credentials*
+**/*.pem
+**/*.key
+**/*.p12
+
+# Python
+**/.venv/
+**/__pycache__/
+**/*.py[cod]
+**/*.egg-info/
+**/.pytest_cache/
+**/.ruff_cache/
+**/.mypy_cache/
+**/.coverage
+**/htmlcov/
+
+# JavaScript and build outputs
+**/node_modules/
+**/node_modules
+**/.public-build-cache/
+**/dist/
+**/coverage/
+**/playwright-report/
+**/test-results/
+
+# Retired project: do not accidentally add it to this backup again.
+wide/
+
+# Runtime state
+research-ops/data/
+research-ops/logs/
+# Platform source backup only: do not publish experimental LTP bundles or receipts.
+research-ops/deploy/ltp/
+research-ops/0.2.4-inner/
+research-ops/bos-cfs-upload-state/
+research-ops/agentos_submit_*.json
+research-ops/web/dist-*/
+research-ops/web/dist.empty-*/
+# Research Ops generated experiment state and source exports
+research-ops/artifacts/
+research-ops/conversions/
+research-ops/evaluations/
+research-ops/experiments/
+research-ops/outputs/
+research-ops/reports/
+research-ops/training/
+research-ops/wandb/
+research-ops/coding_messages_all_batch_result_*/
+research-ops/coding_messages_all_result_raw_*/
+research-ops/anthropic_openai_adapter.jsonl
+**/*.db
+**/*.sqlite
+**/*.sqlite3
+**/*.log
+
+# OS and editor files
+.DS_Store
+**/.idea/
+**/.vscode/
+*~

@@ -1,0 +1,61 @@
+services:
+  openreward-ppt-reward:
+    build:
+      context: ../..
+      dockerfile: deploy/openreward-ppt-reward/Dockerfile
+      args:
+        SLIDEFORGE_REWARD_IMAGE: ${ORS_PPT_POLICY_IMAGE:-registry.example.com/acg-agi/ppt-rollout:0610-deps}
+    ports:
+      - "127.0.0.1:9104:9104"
+    environment:
+      ORS_SLIDEFORGE_REWARD_TOKEN: ${ORS_PPT_RUBRIC_TOKEN}
+      ORS_SLIDEFORGE_REWARD_REQUIRE_AUTH: "true"
+      # The 0610-deps image contains runtime dependencies but not the
+      # SlideForgePipeline reward sources. Mount the existing checkout below.
+      ORS_SLIDEFORGE_PIPELINE_ROOT: /opt/slideforge
+      ORS_PPT_TASK_BUNDLE_ROOT: ${ORS_PPT_TASK_BUNDLE_ROOT}
+      ORS_PPT_ARTIFACT_ROOT: ${ORS_PPT_ARTIFACT_ROOT}
+      ORS_SLIDEFORGE_REWARD_WORK_ROOT: ${ORS_SLIDEFORGE_REWARD_WORK_ROOT}
+      ORS_SLIDEFORGE_REWARD_MAX_CONCURRENCY: "1"
+      ORS_SLIDEFORGE_REWARD_TIMEOUT_SECONDS: "5400"
+      MDRW_LLM_ENDPOINT: ${MDRW_LLM_ENDPOINT}
+      MDRW_LLM_API_KEY: ${MDRW_LLM_API_KEY}
+      MDRW_LLM_MODEL: ${MDRW_LLM_MODEL}
+    volumes:
+      - ${ORS_SLIDEFORGE_PIPELINE_ROOT}:/opt/slideforge:ro
+      - ${ORS_PPT_TASK_BUNDLE_ROOT}:${ORS_PPT_TASK_BUNDLE_ROOT}:ro
+      - ${ORS_PPT_ARTIFACT_ROOT}:${ORS_PPT_ARTIFACT_ROOT}:ro
+      - ${ORS_SLIDEFORGE_REWARD_WORK_ROOT}:${ORS_SLIDEFORGE_REWARD_WORK_ROOT}:rw
+    restart: unless-stopped
+
+  openreward-ppt-runtime:
+    build:
+      context: ../..
+      dockerfile: deploy/openreward-ppt/Dockerfile
+    ports:
+      - "127.0.0.1:9103:9103"
+    environment:
+      ORS_PPT_RUNTIME_TOKEN: ${ORS_PPT_RUNTIME_TOKEN}
+      ORS_PPT_REQUIRE_AUTH: "true"
+      ORS_PPT_POLICY_IMAGE: ${ORS_PPT_POLICY_IMAGE:-registry.example.com/acg-agi/ppt-rollout:0610-deps}
+      ORS_PPT_VERIFIER_IMAGE: ${ORS_PPT_VERIFIER_IMAGE:-registry.example.com/acg-agi/ppt-rollout:0610-deps}
+      ORS_PPT_TASK_BUNDLE_ROOT: ${ORS_PPT_TASK_BUNDLE_ROOT}
+      ORS_PPT_ARTIFACT_ROOT: ${ORS_PPT_ARTIFACT_ROOT}
+      ORS_PPT_SKILL_IN_IMAGE: "true"
+      ORS_PPT_RUBRIC_URL: http://openreward-ppt-reward:9104
+      ORS_PPT_RUBRIC_TOKEN: ${ORS_PPT_RUBRIC_TOKEN}
+      ORS_PPT_RUBRIC_TIMEOUT_SECONDS: "5400"
+      ORS_PPT_CPUS: "2"
+      ORS_PPT_MEMORY: "8g"
+      ORS_PPT_PIDS_LIMIT: "512"
+      ORS_PPT_COMMAND_SECONDS: "180"
+      ORS_PPT_RENDER_SECONDS: "300"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      # These three mounts intentionally use identical host/container paths.
+      # The sidecar passes those host paths to sibling policy/verifier containers.
+      - ${ORS_PPT_TASK_BUNDLE_ROOT}:${ORS_PPT_TASK_BUNDLE_ROOT}:ro
+      - ${ORS_PPT_ARTIFACT_ROOT}:${ORS_PPT_ARTIFACT_ROOT}:rw
+    depends_on:
+      - openreward-ppt-reward
+    restart: unless-stopped

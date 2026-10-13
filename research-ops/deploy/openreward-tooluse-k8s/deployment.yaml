@@ -1,0 +1,126 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: openreward-tooluse
+  namespace: @@NAMESPACE@@
+  labels:
+    app.kubernetes.io/name: openreward-tooluse
+    app.kubernetes.io/part-of: research-ops
+    research-ops.work-id: harn-0001
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: openreward-tooluse
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: openreward-tooluse
+        app.kubernetes.io/part-of: research-ops
+        research-ops.work-id: harn-0001
+    spec:
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      imagePullSecrets:
+        - name: @@IMAGE_PULL_SECRET@@
+      terminationGracePeriodSeconds: 45
+      containers:
+        - name: toolathlon-gym
+          image: @@IMAGE@@
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          env:
+            - name: PYTHONUNBUFFERED
+              value: "1"
+          startupProbe:
+            httpGet:
+              path: /health
+              port: http
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 180
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 6
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+            periodSeconds: 30
+            timeoutSeconds: 3
+            failureThreshold: 5
+          resources:
+            requests:
+              cpu: "2"
+              memory: 8Gi
+            limits:
+              cpu: "4"
+              memory: 16Gi
+          securityContext:
+            runAsUser: 0
+            allowPrivilegeEscalation: true
+            capabilities:
+              drop: ["ALL"]
+              add: ["CHOWN", "DAC_OVERRIDE", "FOWNER", "SETGID", "SETUID"]
+          volumeMounts:
+            - name: shm
+              mountPath: /dev/shm
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: shm
+          emptyDir:
+            medium: Memory
+            sizeLimit: 1Gi
+        - name: tmp
+          emptyDir:
+            sizeLimit: 4Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: openreward-tooluse
+  namespace: @@NAMESPACE@@
+  labels:
+    app.kubernetes.io/name: openreward-tooluse
+    app.kubernetes.io/part-of: research-ops
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: openreward-tooluse
+  ports:
+    - name: http
+      port: 8080
+      targetPort: http
+      protocol: TCP
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: openreward-tooluse
+  namespace: @@NAMESPACE@@
+  labels:
+    app.kubernetes.io/name: openreward-tooluse
+    app.kubernetes.io/part-of: research-ops
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: openreward-tooluse
+  policyTypes: ["Ingress"]
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: @@NAMESPACE@@
+      ports:
+        - protocol: TCP
+          port: 8080

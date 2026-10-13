@@ -1,0 +1,47 @@
+{
+  "environments": {
+    "ppt": {
+      "train": [
+        {
+          "task_id": "example-ppt-001",
+          "benchmark_family": "ppt_online",
+          "output_path": "/workspace/slides.pptx",
+          "query": "Create an editable 3-slide presentation about a fictional research project (example 1). Use /inputs/reference.md for facts and save /workspace/slides.pptx.",
+          "assets": [
+            {
+              "path": "/inputs/reference.md",
+              "role": "content_reference"
+            }
+          ],
+          "runtime": {
+            "asset_mode": "task_bundle",
+            "asset_root": "/inputs",
+            "workspace_root": "/workspace",
+            "pptx_skill_required": true
+          },
+          "task_axes": {
+            "content_mode": "grounded",
+            "edit_round_mode": "single_turn",
+            "interaction_mode": "create",
+            "query_level": "example"
+          },
+          "verifier": {
+            "content_grounding_required": true,
+            "editable_pptx_required": true,
+            "min_slides": 3,
+            "max_slides": 3,
+            "render_required": true,
+            "visual_qa_required": true
+          },
+          "source": {
+            "provenance_status": "synthetic_example",
+            "asset_status": "requires_local_assets",
+            "source_batch": "example-batch",
+            "source_run_id": "example-run"
+          }
+        }
+      ]
+    }
+  },
+  "public_example_notice": "Synthetic examples. Supply your own datasets and assets; this file is not experimental evidence."
+}

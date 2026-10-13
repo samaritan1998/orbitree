@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>Warehouse Trajectory Review</title>
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark">WR</div>
+        <div>
+          <h1>Warehouse Trajectory Review</h1>
+          <p>按 batch 采样并审阅完整训练轨迹</p>
+        </div>
+      </div>
+      <form id="datasetForm" class="dataset-form">
+        <div class="field source-mode-field">
+          <label>来源类型</label>
+          <div class="source-toggle" role="group" aria-label="Warehouse source type">
+            <button class="source-option active" type="button" data-source-type="dataset" aria-pressed="true">Dataset</button>
+            <button class="source-option" type="button" data-source-type="batch" aria-pressed="false">Batch</button>
+          </div>
+        </div>
+        <div class="field dataset-field">
+          <label id="sourceInputLabel" for="datasetInput">Warehouse dataset</label>
+          <input id="datasetInput" name="dataset" type="text" autocomplete="off" required
+            placeholder="https://warehouse.example.com/datasets/ds_...">
+        </div>
+        <div class="field compact-field">
+          <label for="perBatchInput">每批</label>
+          <input id="perBatchInput" name="per_batch" type="number" min="1" max="20" value="10">
+        </div>
+        <div class="field compact-field">
+          <label for="seedInput">Seed</label>
+          <input id="seedInput" name="seed" type="number" min="0" value="42">
+        </div>
+        <button class="primary-button" id="loadButton" type="submit">加载数据集</button>
+      </form>
+    </header>
+
+    <section class="summary-strip" id="summaryStrip" aria-live="polite">
+      <div class="summary-title">
+        <strong id="datasetName">等待输入 Warehouse 链接</strong>
+        <span id="datasetDescription">支持完整 dataset 或单个 SFT batch</span>
+      </div>
+      <dl class="metrics">
+        <div><dt>Batch</dt><dd id="batchCount">0</dd></div>
+        <div><dt>Sample</dt><dd id="sampleCount">0</dd></div>
+        <div><dt>Records</dt><dd id="recordCount">0</dd></div>
+        <div><dt>Seed</dt><dd id="seedValue">42</dd></div>
+      </dl>
+      <a id="warehouseLink" class="warehouse-link disabled" href="#" target="_blank" rel="noreferrer">打开 Warehouse</a>
+    </section>
+
+    <div class="workspace">
+      <aside class="sample-browser">
+        <div class="panel-heading">
+          <div><strong>采样目录</strong><span id="browserMeta">尚未加载</span></div>
+          <button id="resampleButton" class="quiet-button" type="button" disabled>重新采样</button>
+        </div>
+        <div id="batchList" class="batch-list">
+          <div class="empty compact-empty">输入 dataset 或 batch 链接后，这里会展开采样结果。</div>
+        </div>
+      </aside>
+
+      <main class="trajectory-panel">
+        <div class="detail-toolbar">
+          <div class="sample-heading">
+            <span id="sampleLocation">NO SAMPLE</span>
+            <strong id="sampleTitle">选择一条轨迹</strong>
+            <small id="sampleIdentity">完整原始记录将在选中后按需加载</small>
+          </div>
+          <div class="toolbar-actions">
+            <button id="expandButton" class="quiet-button" type="button" disabled>全部展开</button>
+            <button id="collapseButton" class="quiet-button" type="button" disabled>全部折叠</button>
+            <button id="copyButton" class="quiet-button" type="button" disabled>复制 JSON</button>
+          </div>
+        </div>
+        <nav class="tabs" aria-label="Sample views">
+          <button class="tab active" type="button" data-view="trajectory">消息轨迹</button>
+          <button class="tab" type="button" data-view="mask">Loss Mask</button>
+          <button class="tab" type="button" data-view="raw">原始 JSON</button>
+        </nav>
+        <div id="detailContent" class="detail-content">
+          <div class="empty">加载来源后，从左侧选择一条样本。</div>
+        </div>
+      </main>
+
+      <aside class="inspector-panel">
+        <div class="panel-heading">
+          <div><strong>字段检查器</strong><span>原始信息与训练信号</span></div>
+        </div>
+        <div id="inspectorContent" class="inspector-content">
+          <div class="empty compact-empty">尚未选择样本。</div>
+        </div>
+      </aside>
+    </div>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  </div>
+  <script src="/static/app.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,105 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  generateName: openreward-tooluse-policy-canary-
+  namespace: @@NAMESPACE@@
+  labels:
+    app.kubernetes.io/name: openreward-tooluse-policy-canary
+    app.kubernetes.io/part-of: research-ops
+    research-ops.work-id: harn-0001
+spec:
+  backoffLimit: 0
+  activeDeadlineSeconds: 3600
+  ttlSecondsAfterFinished: 86400
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: openreward-tooluse-policy-canary
+        app.kubernetes.io/part-of: research-ops
+        research-ops.work-id: harn-0001
+    spec:
+      restartPolicy: Never
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      imagePullSecrets:
+        - name: @@IMAGE_PULL_SECRET@@
+      containers:
+        - name: canary
+          image: @@SLIME_IMAGE@@
+          imagePullPolicy: IfNotPresent
+          command: ["/bin/bash", "-lc"]
+          args:
+            - |-
+              set -euo pipefail
+              export PYTHONPATH=/opt/slime-repo/slime:/opt/research-ops/backend
+              exec python3 /opt/research-ops/scripts/run_slime_openreward_tooluse_live.py \
+                --checkpoint "${MOPD_POLICY_CHECKPOINT}" \
+                --policy-url "${MOPD_POLICY_API_URL}" \
+                --policy-model "${MOPD_POLICY_MODEL_NAME}" \
+                --output /evidence/tooluse_policy_episode.json
+          workingDir: /opt/research-ops
+          env:
+            - name: ORS_URL
+              value: http://openreward-ors.rl-training.svc.cluster.local:8022
+            - name: ORS_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: @@ORS_AUTH_SECRET@@
+                  key: api_key
+            - name: MOPD_POLICY_API_URL
+              value: @@POLICY_URL@@
+            - name: MOPD_POLICY_MODEL_NAME
+              value: @@POLICY_MODEL@@
+            - name: MOPD_POLICY_CHECKPOINT
+              value: @@CHECKPOINT@@
+            - name: TOOLUSE_TASK_INDEX
+              value: @@TASK_INDEX@@
+            - name: TOKENIZERS_PARALLELISM
+              value: "false"
+            - name: HF_HOME
+              value: /tmp/hf-cache
+          resources:
+            requests:
+              cpu: "2"
+              memory: 8Gi
+            limits:
+              cpu: "4"
+              memory: 16Gi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+          volumeMounts:
+            - name: research-ops-code
+              mountPath: /opt/research-ops
+              readOnly: true
+            - name: slime-repo
+              mountPath: /opt/slime-repo
+              readOnly: true
+            - name: model-root
+              mountPath: /data/models
+              readOnly: true
+            - name: evidence
+              mountPath: /evidence
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: research-ops-code
+          hostPath:
+            path: @@RESEARCH_OPS_ROOT@@
+            type: Directory
+        - name: slime-repo
+          hostPath:
+            path: @@SLIME_ROOT@@
+            type: Directory
+        - name: model-root
+          hostPath:
+            path: /data/models
+            type: Directory
+        - name: evidence
+          hostPath:
+            path: @@EVIDENCE_ROOT@@
+            type: DirectoryOrCreate
+        - name: tmp
+          emptyDir:
+            sizeLimit: 8Gi

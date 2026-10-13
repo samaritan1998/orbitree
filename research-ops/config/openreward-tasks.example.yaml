@@ -1,0 +1,48 @@
+version: 1
+environments:
+  miaoda:
+    train:
+      - episode_id: miaoda-demo-001
+        query: 创建一个包含待办事项增删改查功能的小程序
+        app_type: MINIPROGRAM
+
+  swe:
+    train:
+      - task_id: swe-demo-001
+        query: 修复示例仓库中的单元测试失败
+        repo_ref: example/project
+        base_commit: deadbeef
+        test_command: pytest -q
+
+  ppt:
+    train:
+      - task_id: ppt-demo-001
+        query: 根据产品需求制作一份五页的项目汇报演示文稿
+        output_path: /workspace/deliverable.pptx
+        rubric:
+          - content
+          - structure
+          - visual
+
+  tooluse:
+    train:
+      - task_id: tooluse-demo-001
+        query: 调用计数工具，使 count 最终等于 2
+        initial_state:
+          count: 0
+        target_state:
+          count: 2
+        tool_registry:
+          increment:
+            description: Increase a numeric state value.
+            operation: increment
+            input_schema:
+              type: object
+              properties:
+                key:
+                  type: string
+                delta:
+                  type: number
+              required:
+                - key
+              additionalProperties: false

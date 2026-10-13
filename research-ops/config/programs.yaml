@@ -1,0 +1,36 @@
+programs:
+  - code: HARN
+    slug: harness
+    name: Harness / Office
+    objective: >-
+      Build reusable agent tasks and evaluate document and presentation workflows.
+    color: "#087f5b"
+    sort_order: 10
+  - code: COST
+    slug: model-cost
+    name: Model Cost
+    objective: >-
+      Reduce model training and inference cost through low-precision training and expert
+      pruning while preserving model quality.
+    color: "#b45309"
+    sort_order: 20
+  - code: ADAPT
+    slug: model-adaptation
+    name: Model Adaptation
+    objective: >-
+      Build reusable model adaptation, tuning, evaluation, and deployment workflows.
+    color: "#2563eb"
+    sort_order: 30
+  - code: COMMON
+    slug: common
+    name: Shared Platform
+    objective: Maintain reusable infrastructure, datasets, benchmarks, and workflow tooling.
+    color: "#475569"
+    sort_order: 40
+  - code: FREE
+    slug: free
+    name: Free Work
+    objective: Capture and test ideas before they are promoted into committed Programs.
+    color: "#a21caf"
+    sort_order: 50
+

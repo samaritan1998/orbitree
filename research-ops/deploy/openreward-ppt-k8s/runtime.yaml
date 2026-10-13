@@ -1,0 +1,355 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: openreward-ppt-runtime
+  namespace: @@NAMESPACE@@
+  labels:
+    app.kubernetes.io/name: openreward-ppt-runtime
+    app.kubernetes.io/part-of: research-ops
+    research-ops.work-id: harn-0001
+automountServiceAccountToken: true
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: openreward-ppt-runtime
+  namespace: @@NAMESPACE@@
+  labels:
+    app.kubernetes.io/name: openreward-ppt-runtime
+    app.kubernetes.io/part-of: research-ops
+rules:
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["create", "get", "list", "delete"]
+  - apiGroups: [""]
+    resources: ["pods/log"]
+    verbs: ["get"]
+  - apiGroups: [""]
+    resources: ["pods/exec"]
+    verbs: ["create", "get"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: openreward-ppt-runtime
+  namespace: @@NAMESPACE@@
+  labels:
+    app.kubernetes.io/name: openreward-ppt-runtime
+    app.kubernetes.io/part-of: research-ops
+subjects:
+  - kind: ServiceAccount
+    name: openreward-ppt-runtime
+    namespace: @@NAMESPACE@@
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: openreward-ppt-runtime
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: openreward-ppt-runtime
+  namespace: @@NAMESPACE@@
+  labels:
+    app.kubernetes.io/name: openreward-ppt-runtime
+    app.kubernetes.io/part-of: research-ops
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: openreward-ppt-runtime
+  policyTypes: ["Ingress", "Egress"]
+  ingress:
+    - from:
+        - podSelector: {}
+      ports:
+        - protocol: TCP
+          port: 9103
+  egress:
+    - to:
+        - ipBlock:
+            cidr: @@KUBE_API_CIDR@@
+      ports:
+        - protocol: TCP
+          port: 443
+    - to:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: openreward-ppt-reward
+        - ipBlock:
+            cidr: @@REWARD_SERVICE_CIDR@@
+      ports:
+        - protocol: TCP
+          port: 9104
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+      ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: openreward-ppt-sandbox-deny-all
+  namespace: @@NAMESPACE@@
+  labels:
+    app.kubernetes.io/name: openreward-ppt-sandbox
+    app.kubernetes.io/part-of: research-ops
+spec:
+  podSelector:
+    matchLabels:
+      research-ops.runtime: openreward-ppt-sandbox
+  policyTypes: ["Ingress", "Egress"]
+  ingress: []
+  egress: []
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: openreward-ppt-runtime
+  namespace: @@NAMESPACE@@
+  labels:
+    app.kubernetes.io/name: openreward-ppt-runtime
+    app.kubernetes.io/part-of: research-ops
+    research-ops.work-id: harn-0001
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: openreward-ppt-runtime
+  template:
+    metadata:
+      annotations:
+        research-ops.runtime-assets-sha256: @@RUNTIME_ASSET_SHA256@@
+      labels:
+        app.kubernetes.io/name: openreward-ppt-runtime
+        app.kubernetes.io/part-of: research-ops
+        research-ops.work-id: harn-0001
+    spec:
+      serviceAccountName: openreward-ppt-runtime
+      automountServiceAccountToken: true
+      enableServiceLinks: false
+      imagePullSecrets:
+        - name: @@IMAGE_PULL_SECRET@@
+      terminationGracePeriodSeconds: 60
+      initContainers:
+        - name: install-kubernetes-client
+          image: @@PPT_IMAGE@@
+          imagePullPolicy: IfNotPresent
+          command:
+            - /bin/bash
+            - -lc
+          args:
+            - >-
+              exec python3 -m pip install --disable-pip-version-check
+              --no-index --no-cache-dir --find-links=/opt/runtime-wheelhouse
+              --target=/opt/runtime-site kubernetes==36.0.3
+          env:
+            - name: HOME
+              value: /tmp
+            - name: PIP_NO_CACHE_DIR
+              value: "1"
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: "1"
+              memory: 1Gi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+          volumeMounts:
+            - name: runtime-wheelhouse
+              mountPath: /opt/runtime-wheelhouse
+              readOnly: true
+            - name: runtime-site
+              mountPath: /opt/runtime-site
+            - name: tmp
+              mountPath: /tmp
+      containers:
+        - name: runtime
+          image: @@PPT_IMAGE@@
+          imagePullPolicy: IfNotPresent
+          command:
+            - /bin/bash
+            - -lc
+          args:
+            - >-
+              exec python3 /opt/research-ops/scripts/run_openreward_ppt_runtime.py
+              --host 0.0.0.0 --port 9103
+          workingDir: /opt/research-ops
+          env:
+            - name: PYTHONPATH
+              value: /opt/runtime-site:/opt/research-ops/backend
+            - name: PYTHONDONTWRITEBYTECODE
+              value: "1"
+            - name: ORS_PPT_ENGINE
+              value: kubernetes
+            - name: ORS_PPT_RUNTIME_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: @@AUTH_SECRET@@
+                  key: runtime_token
+            - name: ORS_PPT_REQUIRE_AUTH
+              value: "true"
+            - name: ORS_PPT_POLICY_IMAGE
+              value: @@PPT_IMAGE@@
+            - name: ORS_PPT_VERIFIER_IMAGE
+              value: @@PPT_IMAGE@@
+            - name: ORS_PPT_TASK_BUNDLE_ROOT
+              value: @@BUNDLE_ROOT@@
+            - name: ORS_PPT_ARTIFACT_ROOT
+              value: @@ARTIFACT_ROOT@@
+            - name: ORS_PPT_SKILL_IN_IMAGE
+              value: "true"
+            - name: ORS_PPT_RUBRIC_URL
+              value: @@REWARD_URL@@
+            - name: ORS_PPT_RUBRIC_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: @@AUTH_SECRET@@
+                  key: rubric_token
+            - name: ORS_PPT_RUBRIC_TIMEOUT_SECONDS
+              value: "5400"
+            - name: ORS_PPT_CPUS
+              value: "2"
+            - name: ORS_PPT_MEMORY
+              value: 8g
+            - name: ORS_PPT_COMMAND_SECONDS
+              value: "600"
+            - name: ORS_PPT_RENDER_SECONDS
+              value: "600"
+            # The pinned SlideForge canary includes a 46-slide existing deck.
+            # Keep this above every catalog verifier max_slides value so a
+            # valid deck is not rejected after a successful clean render.
+            - name: ORS_PPT_MAX_RENDER_IMAGES
+              value: "64"
+            - name: ORS_PPT_SESSION_TTL_SECONDS
+              value: "7200"
+            - name: ORS_PPT_K8S_NAMESPACE
+              value: @@NAMESPACE@@
+            - name: ORS_PPT_K8S_HOST_ROOT
+              value: @@HOST_ROOT@@
+            - name: ORS_PPT_K8S_WORK_ROOT
+              value: @@WORK_ROOT@@
+            - name: ORS_PPT_K8S_IMAGE_PULL_SECRET
+              value: @@IMAGE_PULL_SECRET@@
+            - name: ORS_PPT_K8S_NODE_BINARY
+              value: @@NODE_BINARY@@
+            - name: ORS_PPT_K8S_POD_START_SECONDS
+              value: "900"
+            - name: ORS_PPT_K8S_DELETE_SECONDS
+              value: "180"
+          ports:
+            - name: http
+              containerPort: 9103
+              protocol: TCP
+          startupProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 120
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 3
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            periodSeconds: 30
+            timeoutSeconds: 3
+            failureThreshold: 3
+          resources:
+            requests:
+              cpu: 500m
+              memory: 1Gi
+            limits:
+              cpu: "2"
+              memory: 4Gi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+          volumeMounts:
+            - name: research-ops-code
+              mountPath: /opt/research-ops
+              readOnly: true
+            - name: task-bundles
+              mountPath: @@BUNDLE_ROOT@@
+              readOnly: true
+            - name: artifact-root
+              mountPath: @@ARTIFACT_ROOT@@
+            - name: runtime-work
+              mountPath: @@WORK_ROOT@@
+            - name: runtime-tools
+              mountPath: @@NODE_TOOLS_ROOT@@
+              readOnly: true
+            - name: runtime-site
+              mountPath: /opt/runtime-site
+              readOnly: true
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: research-ops-code
+          hostPath:
+            path: @@RESEARCH_OPS_ROOT@@
+            type: Directory
+        - name: task-bundles
+          hostPath:
+            path: @@BUNDLE_ROOT@@
+            type: Directory
+        - name: artifact-root
+          hostPath:
+            path: @@ARTIFACT_ROOT@@
+            type: DirectoryOrCreate
+        - name: runtime-work
+          hostPath:
+            path: @@WORK_ROOT@@
+            type: DirectoryOrCreate
+        - name: runtime-tools
+          hostPath:
+            path: @@NODE_TOOLS_ROOT@@
+            type: Directory
+        - name: runtime-wheelhouse
+          hostPath:
+            path: @@WHEELHOUSE_ROOT@@
+            type: Directory
+        - name: runtime-site
+          emptyDir:
+            sizeLimit: 128Mi
+        - name: tmp
+          emptyDir:
+            sizeLimit: 1Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: openreward-ppt-runtime
+  namespace: @@NAMESPACE@@
+  labels:
+    app.kubernetes.io/name: openreward-ppt-runtime
+    app.kubernetes.io/part-of: research-ops
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: openreward-ppt-runtime
+  ports:
+    - name: http
+      port: 9103
+      targetPort: http
+      protocol: TCP

@@ -1,0 +1,86 @@
+schema_version: "miaoda.glm52.batch_rerun_reward.v1"
+pipeline_name: "demo-rerun-reward"
+
+# This manifest attaches to already-submitted serving jobs.  It deliberately
+# does not submit or delete LTP jobs and does not remove gateway endpoints.
+runtime:
+  output_root: "/srv/research-ops/app/outputs/glm52-i59-batch-rerun-reward-c1f0"
+  poll_interval_seconds: 30
+  service_timeout_seconds: 604800
+  batch_timeout_seconds: 604800
+  reward_timeout_seconds: 172800
+  http_timeout_seconds: 30
+  ltp_command_timeout_seconds: 25
+  state_file: "/srv/research-ops/app/outputs/glm52-i59-batch-rerun-reward-c1f0/state.json"
+  result_file: "/srv/research-ops/app/outputs/glm52-i59-batch-rerun-reward-c1f0/rollout_result.xlsx"
+
+model:
+  name: "demo-reward-model"
+  artifact_path: "/data/models/experiments/demo-reward-checkpoint-fp8-r7"
+  artifact_success_marker: "/data/models/experiments/demo-reward-checkpoint-fp8-r7/FP8_QUANT_SUCCESS"
+  provider: "openai"
+  coding_prompti_variant: "qianfan-coder"
+  api_key_env: "AGENTOS_MODEL_API_KEY"
+  gateway_control_url: "http://198.51.100.50:8070"
+  gateway_api_url: "http://198.51.100.51:8080"
+
+serving:
+  ltp_cli: "ltp-cli"
+  ltp_user: "alice"
+  per_endpoint_concurrency: 20
+  min_ready_endpoints: 1
+  max_ready_endpoints: 4
+  jobs:
+    - name: "demo-serving-job-000001"
+      cluster: "cluster-a"
+      driver_log: "/data/models/experiments/demo-reward-checkpoint-eval-dev-r2/logs/serve-dev1/demo-serving-job-000001.driver.log"
+    - name: "demo-serving-job-000002"
+      cluster: "cluster-a"
+      driver_log: "/data/models/experiments/demo-reward-checkpoint-eval-dev-r2/logs/serve-dev1/demo-serving-job-000002.driver.log"
+    - name: "demo-serving-job-000003"
+      cluster: "cluster-a"
+      driver_log: "/data/models/experiments/demo-reward-checkpoint-eval-dev-r2/logs/serve-dev1/demo-serving-job-000003.driver.log"
+    - name: "demo-serving-job-000004"
+      cluster: "cluster-dev"
+      driver_log: "/data/models/experiments/demo-reward-checkpoint-eval-dev-r2/logs/serve-dev1/demo-serving-job-000004.driver.log"
+  smoke:
+    prompt: "Reply with READY only."
+    max_tokens: 16
+    temperature: 0.0
+    chat_template_kwargs:
+      enable_thinking: true
+      preserve_thinking: true
+
+rollout:
+  datawheel_url: "http://198.51.100.250:80/api/v1/datawheel"
+  datawheel_token_env: "DATAWHEEL_TOKEN"
+  batch_task_id: "439993f3-4f44-4f5a-8c59-846164f3dce5"
+  restart_all_records: true
+  skip_check: false
+  group_size: 50
+  record_page_size: 200
+  configured_max_concurrency: 80
+  resume_after_restart: false
+
+reward:
+  enabled: true
+  goblin_url: "http://198.51.100.139:8118"
+  goblin_token_env: "GOBLIN_REWARD_API_TOKEN"
+  benchmark_dataset_name: "example-app-300"
+  rollout_model: "demo-reward-model"
+  query_round: "first_round"
+  prompt_version: "v1_6"
+  reward_model: "gpt-5.5-agent"
+  image: "registry.example.com/acg-agi/miaoda-all:0526-codex"
+  concurrency: 50
+  eval_mm: true
+  eval_miniprog: true
+  timeout_seconds: 1200
+  max_retries: 1
+  pod_retry: 1
+  wait_for_completion: true
+  api_env: "evaluation"
+
+# Safety invariant: this workflow never calls gateway delete or ltp delete.
+teardown:
+  enabled: false

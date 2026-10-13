@@ -1,0 +1,185 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: @@AUTH_SECRET@@
+  namespace: @@NAMESPACE@@
+  labels:
+    app.kubernetes.io/name: openreward-ors
+    app.kubernetes.io/part-of: research-ops
+    research-ops.work-id: harn-0001
+type: Opaque
+stringData:
+  api_key: @@API_KEY@@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: openreward-ors
+  namespace: @@NAMESPACE@@
+  labels:
+    app.kubernetes.io/name: openreward-ors
+    app.kubernetes.io/part-of: research-ops
+    research-ops.work-id: harn-0001
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: openreward-ors
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: openreward-ors
+        app.kubernetes.io/part-of: research-ops
+        research-ops.work-id: harn-0001
+      annotations:
+        research-ops.code-sha256: @@CODE_SHA256@@
+    spec:
+      # The real AgentOS policy URL is served by the cluster-d host network.
+      # Host networking is required for the ORS policy-capture proxy to reach
+      # that endpoint; all external credentials remain Secret references.
+      hostNetwork: @@HOST_NETWORK@@
+      dnsPolicy: ClusterFirstWithHostNet
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      imagePullSecrets:
+        - name: @@IMAGE_PULL_SECRET@@
+      terminationGracePeriodSeconds: 30
+      containers:
+        - name: ors
+          image: @@IMAGE@@
+          imagePullPolicy: IfNotPresent
+          command: ["/bin/bash", "-lc"]
+          args:
+            - >-
+              exec python3 /opt/research-ops/scripts/run_openreward_server.py
+              --host 0.0.0.0 --port 8022 --mode contract
+              --backend-config /opt/research-ops/config/openreward-backends.example.yaml
+              --task-catalog /opt/research-ops/config/openreward-tooluse-canary.json
+              --task-catalog /opt/research-ops/config/openreward-ppt-canary.json
+              --task-catalog /opt/research-ops/config/openreward-swe-canary.json
+              --real-domain tooluse --real-domain ppt --real-domain swe @@MIAODA_REAL_DOMAIN@@
+              --api-key-env ORS_API_KEY
+          env:
+            - name: PYTHONPATH
+              value: /opt/research-ops/backend
+            - name: PYTHONDONTWRITEBYTECODE
+              value: "1"
+            - name: ORS_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: @@AUTH_SECRET@@
+                  key: api_key
+            - name: ORS_TOOLUSE_SERVICE_URL
+              value: @@TOOLUSE_URL@@
+            - name: ORS_PPT_RUNTIME_URL
+              value: @@PPT_URL@@
+            - name: ORS_PPT_RUNTIME_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: openreward-ppt-auth
+                  key: runtime_token
+            - name: ORS_SWE_SANDBOX_URL
+              value: @@SWE_URL@@
+            - name: ORS_SWE_SANDBOX_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: openreward-swe-auth
+                  key: runtime_token
+          ports:
+            - name: http
+              containerPort: 8022
+              protocol: TCP
+          startupProbe:
+            httpGet:
+              path: /health
+              port: http
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 120
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 6
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+            periodSeconds: 30
+            timeoutSeconds: 3
+            failureThreshold: 5
+          resources:
+            requests:
+              cpu: 500m
+              memory: 1Gi
+            limits:
+              cpu: "2"
+              memory: 4Gi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+          volumeMounts:
+            - name: research-ops-code
+              mountPath: /opt/research-ops
+              readOnly: true
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: research-ops-code
+          hostPath:
+            path: @@RESEARCH_OPS_ROOT@@
+            type: Directory
+        - name: tmp
+          emptyDir:
+            sizeLimit: 1Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: openreward-ors
+  namespace: @@NAMESPACE@@
+  labels:
+    app.kubernetes.io/name: openreward-ors
+    app.kubernetes.io/part-of: research-ops
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: openreward-ors
+  ports:
+    - name: http
+      port: 8022
+      targetPort: http
+      protocol: TCP
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: openreward-ors
+  namespace: @@NAMESPACE@@
+  labels:
+    app.kubernetes.io/name: openreward-ors
+    app.kubernetes.io/part-of: research-ops
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: openreward-ors
+  policyTypes: ["Ingress"]
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: @@NAMESPACE@@
+        # The AgentOS/LTP route reaches the ClusterIP through this internal
+        # gateway. Keep the allow-list narrow instead of opening ORS to the
+        # whole network; API-key authentication remains mandatory.
+        - ipBlock:
+            cidr: 198.51.100.7/32
+      ports:
+        - protocol: TCP
+          port: 8022

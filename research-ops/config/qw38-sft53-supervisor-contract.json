@@ -1,0 +1,55 @@
+{
+  "pipeline_name": "demo-tuned-pipeline",
+  "user": "alice",
+  "cluster": "cluster-reserved-a",
+  "cluster_candidates": [
+    "cluster-a",
+    "cluster-b",
+    "cluster-c",
+    "cluster-reserved-a",
+    "cluster-reserved-b",
+    "cluster-reserved-c"
+  ],
+  "model_name": "demo-tuned-model",
+  "model_artifact": "/data/models/experiments/demo-tuned-checkpoint/iter_0000053_hf_bridge",
+  "tool_format": "openai_tool",
+  "teardown_serving_after_rollout": true,
+  "poll_interval_seconds": 30,
+  "per_endpoint_concurrency": 8,
+  "health_failures_before_restart": 0,
+  "max_restarts_per_replica": 0,
+  "max_selective_retry_rounds": 0,
+  "serve": {
+    "expected_endpoints": 1,
+    "min_ready_endpoints": 1,
+    "replicas": [
+      {
+        "id": "ledger-bootstrap",
+        "config": "/srv/research-ops/app/deploy/ltp/qw38-inhouse300-formal/config-sft53.yaml",
+        "run": "/srv/research-ops/app/deploy/ltp/qw38-inhouse300-formal/run.sh",
+        "job_base": "demo-tuned-rollout"
+      }
+    ]
+  },
+  "fleet": {
+    "ledger": "/srv/research-ops/app/outputs/demo-tuned-pipeline/submitted_jobs.tsv",
+    "max_endpoints": 6,
+    "readiness_directory": "/srv/research-ops/workspaces/alice/qianfan_coder/glm_post_train/sglang_logs/qw38-sft53-i300-0825-formal-r1/readiness",
+    "effective_concurrency_formula": "min(48, healthy_endpoints * 8)"
+  },
+  "rollout": {
+    "name": "eval-example-demo-tuned-pipeline",
+    "dataset": "example-app-300",
+    "config": "/srv/research-ops/app/config/qw38-sft53-inhouse300-rollout-reward.yaml",
+    "submit": "/srv/research-ops/app/scripts/qw38_sft53_inhouse300_workflow.sh",
+    "batch_file": "/srv/research-ops/app/outputs/demo-tuned-pipeline/state.json",
+    "provider": "openai",
+    "reward": {
+      "enabled": true,
+      "query_round": "first_round",
+      "prompt_version": "v1_6",
+      "benchmark_dataset_name": "example-app-300",
+      "concurrency": 50
+    }
+  }
+}

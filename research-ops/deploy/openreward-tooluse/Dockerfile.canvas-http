@@ -1,0 +1,11 @@
+ARG TOOLATHLON_BASE_IMAGE=research-ops/toolathlon-gym:9c82859d
+FROM ${TOOLATHLON_BASE_IMAGE}
+
+COPY scripts/patch_toolathlon_canvas_http.py /tmp/patch_toolathlon_canvas_http.py
+RUN python3 /tmp/patch_toolathlon_canvas_http.py \
+        --client /opt/local_servers/mcp-canvas-lms/src/client.ts \
+        --client /opt/local_servers/mcp-canvas-lms/build/client.js \
+        --config /app/configs/mcp_servers/canvas.yaml \
+    && rm /tmp/patch_toolathlon_canvas_http.py \
+    && cd /opt/local_servers/mcp-canvas-lms \
+    && npm install pg @types/pg

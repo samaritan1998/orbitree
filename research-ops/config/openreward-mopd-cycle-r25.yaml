@@ -1,0 +1,74 @@
+version: 1
+cluster: cluster-d
+user: alice
+state_path: ../data/example-mopd-run/mopd_cycle_r25_state.json
+
+phases:
+  - name: rollout
+    config: ../deploy/ltp/openreward-mopd-live-0723/config-train-z-r25-probe.yaml
+    run: ../deploy/ltp/openreward-mopd-live-0723/run.sh
+    # The fused probe can fail in actor backward after its online episode has
+    # already been durably exported. The next optimizer phase is decoupled;
+    # accept only this explicitly validated receipt in that case.
+    allow_ready_after_failure: true
+    ready:
+      path: ../data/example-mopd-run/tooluse_live_r25_probe/evidence/rollout_1.json
+      kind: json
+      equals:
+        version: 1
+
+  - name: optimizer
+    config: ../deploy/ltp/openreward-train-smoke-0722/config-train-z-r25-replay-opd-r1.yaml
+    run: ../deploy/ltp/openreward-train-smoke-0722/run.sh
+    ready:
+      path: ../data/example-mopd-run/tooluse_replay_r25_opd_r1/training_receipt.json
+      kind: json
+      equals:
+        status: completed
+        checkpoint_iteration: 1
+
+  - name: conversion
+    config: ../deploy/ltp/openreward-policy-convert-0723/config-train-z-r25-replay.yaml
+    run: ../deploy/ltp/openreward-policy-convert-0723/run.sh
+    ready:
+      path: /data/models/experiments/qianfan_coder_glm/glm_post_train/hf_checkpoints/demo-mopd-checkpoint
+      kind: dir
+      required:
+        - config.json
+        - model.safetensors.index.json
+        - model-00014-of-00014.safetensors
+    timeout_seconds: 7200
+
+  - name: gateway
+    config: ../deploy/ltp/openreward-policy-gateway-0723/config-train-z-r25-replay.yaml
+    run: ../deploy/ltp/openreward-policy-gateway-0723/run.sh
+    ready:
+      path: ../data/example-mopd-run/gateway_weight_version_r25.json
+      kind: json
+      equals:
+        status: verified
+        weight_version: online-mopd-r25-iter1
+    ready_while_running: true
+    timeout_seconds: 7200
+
+  - name: postupdate_rollout
+    config_template: ../deploy/ltp/openreward-tooluse-canary-0722/config-train-z-fetch-postupdate-r25-template.yaml
+    config_output: ../data/example-mopd-run/generated/config-train-z-fetch-postupdate-r25.yaml
+    env_from_json:
+      policy_url:
+        path: ../data/example-mopd-run/gateway_weight_version_r25.json
+        key: endpoint
+    run: ../deploy/ltp/openreward-tooluse-canary-0722/run.sh
+    ready:
+      path: ../data/example-mopd-run/tooluse_postupdate_r25.json
+      kind: json
+      equals:
+        status: completed
+        reward: 1.0
+    timeout_seconds: 7200
+
+verification:
+  before: ../data/example-mopd-run/tooluse_live_r25_probe/evidence/rollout_1.json
+  after: ../data/example-mopd-run/tooluse_postupdate_r25.json
+  gateway_receipt: ../data/example-mopd-run/gateway_weight_version_r25.json
+  output: ../data/example-mopd-run/online_mopd_transition_r25_verified.json

@@ -1,0 +1,14 @@
+[Unit]
+Description=Research Ops local control plane
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=@@ROOT@@
+EnvironmentFile=-@@ROOT@@/.env
+ExecStart=@@ROOT@@/.venv/bin/rops serve
+Restart=on-failure
+RestartSec=3
+
+[Install]
+WantedBy=default.target

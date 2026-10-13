@@ -1,0 +1,6 @@
+interface:
+  display_name: "Octo Workflow"
+  short_description: "Visualize a task workflow on demand"
+  default_prompt: "Use $octo-workflow to visualize this task and return its workflow link."
+policy:
+  allow_implicit_invocation: true

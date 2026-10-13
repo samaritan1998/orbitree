@@ -1,0 +1,32 @@
+version: 1
+
+# Canonical frozen-teacher routing for the four-domain online MOPD experiment.
+# Service endpoints and credentials are injected at runtime; this file pins
+# only immutable checkpoint lineage.
+routing_key: domain
+
+student:
+  init_checkpoint: /data/models/checkpoints/demo-teacher-base/iter_0000023_hf
+  update_in_place: false
+
+teachers:
+  miaoda:
+    checkpoint: /data/models/checkpoints/demo-teacher-base/iter_0000023_hf
+    serving_checkpoint: /data/models/teachers/demo-teacher-serving
+    endpoint_receipt_env: OPENREWARD_XMLSFT_I23_TEACHER_ENDPOINT_FILE
+    frozen: true
+  swe:
+    checkpoint: /data/models/checkpoints/demo-teacher-base/iter_0000023_hf
+    serving_checkpoint: /data/models/teachers/demo-teacher-serving
+    endpoint_receipt_env: OPENREWARD_XMLSFT_I23_TEACHER_ENDPOINT_FILE
+    frozen: true
+  ppt:
+    checkpoint: /data/models/checkpoints/demo-teacher-ppt/iter_0000002_hf_official_visual
+    serving_checkpoint: /data/models/checkpoints/demo-teacher-ppt/iter_0000002_hf_official_visual
+    endpoint_receipt_env: OPENREWARD_PPT2383_TEACHER_ENDPOINT_FILE
+    frozen: true
+  tooluse:
+    checkpoint: /data/models/checkpoints/demo-teacher-base/iter_0000023_hf
+    serving_checkpoint: /data/models/teachers/demo-teacher-serving
+    endpoint_receipt_env: OPENREWARD_XMLSFT_I23_TEACHER_ENDPOINT_FILE
+    frozen: true

@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "action": { "type": "string", "enum": ["none", "new", "merge"] },
+    "candidate_name": { "type": ["string", "null"] },
+    "target_skill": { "type": ["string", "null"] },
+    "title": { "type": "string" },
+    "description": { "type": "string" },
+    "rationale": { "type": "string" },
+    "reusable_steps": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "risks": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "evidence_refs": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  },
+  "required": [
+    "action",
+    "candidate_name",
+    "target_skill",
+    "title",
+    "description",
+    "rationale",
+    "reusable_steps",
+    "risks",
+    "evidence_refs"
+  ]
+}

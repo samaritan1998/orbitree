@@ -1,0 +1,15 @@
+{
+  "task_id": "canvas-assignment-word-notion",
+  "task_name": "canvas-assignment-word-notion",
+  "query": "Use the prompt supplied by the official Toolathlon environment.",
+  "benchmark_family": "toolathlon_gym",
+  "source": {
+    "repository": "EnvCommons/toolathlon-gym",
+    "revision": "9c82859d05bc1f0376150d749cd2e3d43471d583"
+  },
+  "reward_spec": {
+    "type": "binary",
+    "evaluator": "official_task_script",
+    "terminal_action": "claim_done"
+  }
+}

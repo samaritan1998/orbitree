@@ -1,0 +1,30 @@
+{
+  "schema_version": "openreward.dynamic_sources.v1",
+  "sources": {
+    "miaoda": {
+      "expected_count": 8,
+      "kind": "miaoda_jsonl",
+      "path": "/srv/research-ops/projects/example-app-data/data/miaoda_raw_query/miaoda_raw_query_train64.jsonl"
+    },
+    "ppt": {
+      "expected_count": 8,
+      "kind": "ppt_task_bundles",
+      "limitation": "Only executable task bundles are included. The 350-row closure dataset contains historical trajectories, not recoverable rollout task assets.",
+      "root": "/srv/research-ops/app/data/example-ppt-bundles/bundles"
+    },
+    "swe": {
+      "expected_count": 8,
+      "image_prefix": "registry.example.com/acg-airec/r2e_gym/",
+      "kind": "r2e_parquet",
+      "pattern": "/srv/research-ops/app/data/example-swe-manifests/manifests/r2e_train_*.parquet"
+    },
+    "tooluse": {
+      "expected_count": 8,
+      "kind": "toolathlon_finalpool",
+      "repository": "EnvCommons/toolathlon-gym",
+      "revision": "9c82859d05bc1f0376150d749cd2e3d43471d583",
+      "root": "/srv/research-ops/projects/openreward-upstreams/toolathlon-gym"
+    }
+  },
+  "public_example_notice": "Illustrative source descriptors. Supply your own paths, data and counts."
+}

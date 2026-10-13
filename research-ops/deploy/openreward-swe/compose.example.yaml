@@ -1,0 +1,18 @@
+services:
+  openreward-swe-runtime:
+    build:
+      context: ../..
+      dockerfile: deploy/openreward-swe/Dockerfile
+    ports:
+      - "127.0.0.1:9101:9101"
+    environment:
+      ORS_SWE_SANDBOX_TOKEN: ${ORS_SWE_SANDBOX_TOKEN}
+      ORS_SWE_REQUIRE_AUTH: "true"
+      ORS_SWE_CPUS: "2"
+      ORS_SWE_MEMORY: "8g"
+      ORS_SWE_PIDS_LIMIT: "512"
+      ORS_SWE_VERIFY_SECONDS: "1800"
+      ORS_SWE_PULL_MISSING_IMAGES: "true"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: unless-stopped

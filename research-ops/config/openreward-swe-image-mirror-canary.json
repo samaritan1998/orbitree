@@ -1,0 +1,4 @@
+{
+  "swebench/sweb.eval.x86_64.astropy_1776_astropy-12907:latest": "registry.example.com/acg-airec/r2e_gym/slimshetty/swebench-verified:sweb.eval.x86_64.astropy__astropy-12907",
+  "swebench/sweb.eval.x86_64.scikit-learn_1776_scikit-learn-14141:latest": "registry.example.com/acg-airec/r2e_gym/slimshetty/swebench-verified:sweb.eval.x86_64.scikit-learn__scikit-learn-14141"
+}

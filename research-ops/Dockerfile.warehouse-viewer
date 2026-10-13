@@ -1,0 +1,12 @@
+FROM python:3.12-slim
+
+WORKDIR /app
+COPY backend /app/backend
+COPY web/warehouse-viewer /app/web/warehouse-viewer
+
+ENV PYTHONPATH=/app/backend \
+    WAREHOUSE_ROOT=/data/trajectory-warehouse \
+    WAREHOUSE_VIEWER_STATIC_ROOT=/app/web/warehouse-viewer
+
+EXPOSE 8315
+CMD ["python", "/app/backend/research_ops/warehouse_viewer_stdlib.py"]
