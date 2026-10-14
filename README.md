@@ -1,103 +1,185 @@
 # Orbitree
 
+**English** | [简体中文](README.zh-CN.md)
+
 > A self-hosted workspace for AI-assisted research and engineering.
 
-面向模型研究工作的本地优先执行工作台。Orbitree 管理方向、任务、分支、Codex/Claude Code/Pi 会话、工作目录、外部任务和结果，让一项工作可以继续、分叉和回看。本仓库只维护 Orbitree；不包含技术情报采集系统。
+Keep tasks, agent sessions, workspaces, experiments, and results connected—even when your work branches into multiple ideas.
 
-公开产品名称为 **Orbitree**。为保持现有部署兼容，源码目录 `research-ops/`、Python 模块 `research_ops`、CLI 命令 `rops` 和配置前缀 `ROPS_*` 保留原名。
+Orbitree organizes work performed with **Codex**, **Claude Code**, and optionally **Pi**. Use their native terminal interfaces or continue a conversation in the browser, then return to a persistent work tree to see what happened and where to pick up next.
+
+## Why Orbitree?
+
+Working with several AI sessions quickly raises questions: Which conversation owns this experiment? Where did this branch come from? Has the agent finished, or is an external job still running? What did we learn that is worth keeping?
+
+Orbitree gives those pieces a shared structure:
 
 ```mermaid
 flowchart LR
-    A[Program 方向] --> B[Work 任务]
-    B --> C[Branch 方案]
+    A[Program: research direction] --> B[Work: a task]
+    B --> C[Branch: an approach]
     C --> D[Codex / Claude Code / Pi]
-    D --> E[代码、实验和外部任务]
-    E --> F[Results / Handoff / Memory]
+    D --> E[Code, experiments, external jobs]
+    E --> F[Results, handoffs, reviewed memory]
     F --> C
 ```
 
-## Orbitree 功能一览
+It is an execution workspace, not a news collector or a replacement for your agent's native CLI. Ordinary messages and Goal objectives are forwarded without automatically injecting platform instructions, briefs, or memory. Explicit cross-runtime handoffs are a separate, user-approved action.
 
-| 工作环节 | 功能 | 入口或说明 |
+## Features
+
+| Capability | What it does | Important boundary |
 | --- | --- | --- |
-| 开始工作 | 无需先写目标的临时任务、可配置方向、任务树与 Graph/List 视图 | `/today`、`/programs/CODE` |
-| 执行与继续 | Web 单轮对话、本地 CLI、会话发现与挂载、手动 Fork、按 Branch 选择模型和身份 | `Results`、`/sessions`；支持 Codex、Claude Code，可选 Pi |
-| 保持进度 | 可见活动、最终结果、Handoff、已审核 Memory、候选 Skill、分支结果合并 | Branch 详情、`/memory`、`/skills`、`/merge` |
-| 等待与检查 | 定时检查、Codex Native Goal、每日复盘、如流通知 | 需要分别启用；Native Goal 仅适用于 Codex Branch |
-| 评测与资源 | Agent Eval Harness、LTP 任务监控、只读集群资源视图 | `/evals`、`/ltp-monitor`、`/clusters`；依赖对应外部服务 |
-| 管理与扩展 | 浏览器终端、仓库、多人账号与个人方向 | `/terminal`、`/repositories`、`/settings`；多人入口单独部署 |
+| **Work trees** | Organize directions, tasks, and explicit forks; switch between graph and list views. | Forking is manual. Hiding a task does not delete its files. |
+| **Low-friction task creation** | Start scratch work before you have a title or a fully defined objective. | Add detail as the task becomes clearer. |
+| **Native CLI + browser conversations** | Start or resume a branch locally, or send a turn from its Results page. | One writer per conversation; independent branches can run concurrently. |
+| **Session discovery** | Discover identifiable local Codex sessions and attach them to a task or direction. | Internal subagents are not presented as separate work sessions; ambiguous process bindings are not guessed. |
+| **Independent workspaces** | Use registered Git repositories and worktrees, or standalone scratch Git repositories. | Large models, caches, and external data are not automatically duplicated. |
+| **Results and live activity** | Review recorded queries, final answers, visible updates, tool activity, and failures. | Runtime event support varies. Hidden model reasoning is not displayed. |
+| **Branch-level execution settings** | Select identity, model, and reasoning effort where supported by the chosen runtime. | Authentication and model access must be configured; failures do not silently switch billing identities. |
+| **Scheduled checks** | Periodically send an editable check prompt with interval, stop, and notification settings. | Waiting uses no model process; each actual check consumes model quota. Busy conversations defer checks. |
+| **Codex Native Goals** | Set a persistent objective and inspect execution, recovery, and goal history. | Codex only. An active Goal is not proof that a model turn is currently running. |
+| **Notifications** | Link back to the task after a completed turn, error, Goal progress, or important check result. | Requires configured Infoflow/Ruliu credentials and a recipient. |
+| **Handoffs, memory, and skills** | Save conclusions, review evidence-backed memory, and optionally propose new or merged skills. | Handoffs are on demand. Skill proposals require explicit review before installation. |
+| **Daily reflections** | Review recorded work in a separate, read-only analysis run. | Opt-in; unregistered work is a coverage limitation, not evidence that nothing happened. |
+| **External jobs and evaluation** | Register jobs and use optional evaluation, LTP monitoring, and resource integrations. | These require their own services and credentials; arbitrary jobs are not automatically discovered. |
+| **Browser terminal** | Use one independent host shell from the browser. | Requires authentication and explicit enablement in single-user deployments; it is not an AI conversation. |
+| **Team deployment** | Invite users into separate Linux execution accounts, instances, databases, and runtime homes. | Separate deployment required; not VM isolation or a complete enterprise SaaS. |
+| **On-demand workflow links** | Show workflow visualizations published through a skill or another explicit producer. | Displaying a DAG does not execute or supervise its nodes. |
 
-Orbitree 的[完整功能导航与边界](research-ops/README.md#功能导航)列出了哪些功能默认可用、哪些需要额外配置。系统不自动替用户创建 Fork，也不向普通对话注入平台提示词。
+See the [detailed feature guide](research-ops/README.md#功能导航) for configuration and operating boundaries.
 
-## 适用方向
+## Screenshots
 
-现有单人实例使用下列方向；多人部署中的新账号默认只有 FREE，可以在「设置 → 工作方向」自行新增：
+### Work tree
 
-| Program | 典型工作 |
-| --- | --- |
-| `HARN` | PPT 轨迹、PresentBench、Office Agent、秒哒泛化 Harness |
-| `COST` | 低精度训练、FP8/FP4、MoE 专家裁剪、训练与推理降本 |
-| `ADAPT` | 新模型结构适配、权重转换、训练、评测、上线 |
-| `COMMON` | 跨方向复用的评测、数据、工具和基础设施 |
-| `FREE` | 尚未归类的想法、临时验证和探索 |
+A Program view shows tasks and user-created forks. The task itself is the default work path; extra nodes represent explicit branches.
 
-## 截图
+![Orbitree work tree](research-ops/docs/images/program-tree.png)
 
-Orbitree 的 Program 图展示工作项和显式 fork 的关系。图中的节点只表示用户选择保留的工作路径；Codex 内部 subagent 不会把页面淹没。
+### Conversation results
 
-![Program work tree](research-ops/docs/images/program-tree.png)
+Keep the query and answer together, inspect visible activity, and continue locally or in the browser.
 
-在一个任务内，Web 显示可见进度、已完成轮次的结果、外部任务、Handoff 与 Memory；原生本地终端保留对应 AI CLI 的完整交互能力。
+![Orbitree conversation results](research-ops/docs/images/live-activity.png)
 
-![Live activity](research-ops/docs/images/live-activity.png)
+Both screenshots use fictional tasks and conversations, rendered without contacting a production backend. They show the current interface, which still contains some Chinese labels; this README is not a claim of full UI localization.
 
-截图使用虚构任务、会话和运行记录生成，不连接实际后端。
+## Quick start
 
-## 快速开始
+### Prerequisites
 
-### 1. 安装与启动
+- Python **3.12+** and `uv`.
+- Git and Node.js/npm. The current Vite dependency requires Node.js **20.19+ within the 20.x line**, or **22.12+**.
+- A configured `codex` CLI. The current host installer checks for it even if you plan to add another runtime.
+- Optional: installed and authenticated Claude Code or Pi CLIs.
+
+The core workspace runs directly on the host. **Docker is not required** for this setup; some optional evaluation backends use containers or Kubernetes.
+
+### Install and start
 
 ```bash
 git clone https://github.com/samaritan1998/orbitree.git
 cd orbitree/research-ops
 cp .env.example .env
+```
+
+Review `.env` before starting: choose models available to your account, configure the runtime identity, and select a writable workspace root. Example integration URLs are placeholders, not working services.
+
+```bash
 scripts/install-host.sh --no-service
 .venv/bin/rops server start
 ```
 
-默认启动地址为 `http://127.0.0.1:8020`。它不要求 Docker；本地数据库、工作目录和 Codex 会话均留在宿主机。
+Open **http://127.0.0.1:8020** on the host. For remote access, configure HTTPS, authentication, and a WebSocket-capable reverse proxy. Do not expose an unauthenticated instance with file and shell access to the internet.
 
-### 2. 日常工作流
+Omit `--no-service` to let the installer start a user-level systemd service, or a detached supervisor when user systemd is unavailable.
 
-1. 在 Orbitree 选择方向；想法还不清楚时使用 `Create scratch work`，明确时使用 `New work`。
-2. 在任务详情直接发起一轮 Web 对话，或点击 `Start locally` / `Continue locally`，将命令粘贴到同一台服务器的终端。
-3. 在所选的 Codex、Claude Code 或 Pi 中完成调试、代码、训练、部署或评测。Web 汇总可见进度和已完成轮次的结果；同步时机因运行时而异。
-4. 有独立假设时显式 `Fork`；新的目标则创建 Work，不要求为每个想法分叉。
-5. 一轮结束后按需保存 Handoff；可选择提取候选 Skill，人工审核后才安装。
+### A typical workflow
 
-完整操作说明见 [快速上手](docs/QUICKSTART.zh-CN.md) 和 [Orbitree 使用手册](research-ops/docs/USER_GUIDE.zh-CN.md)。
+1. Choose a Program, or use **Create scratch work** for an idea that is not yet well defined.
+2. Send a message in **Results**, or use **Start locally / Continue locally** and run the copied command on the same host.
+3. When you want to try a separate approach, explicitly **Fork**. The parent remains available.
+4. Register external experiments in **Jobs**. Use a scheduled check when you only need periodic updates, rather than an ongoing Goal.
+5. Return through the work tree or a notification link to review results and continue.
+6. Save a handoff when useful, review durable memory, and optionally extract a reusable skill for approval.
 
-## 仓库结构
+Use a **Native Goal** when you want Codex to keep advancing an explicit objective. Use a **scheduled check** when you want a periodic turn while waiting for an external process. Pausing either is not, by itself, cancellation of an external job.
+
+## Programs are configurable
+
+The seed configuration includes these example directions:
+
+| Code | Example scope |
+| --- | --- |
+| `HARN` | Office automation, presentation tasks, and evaluation harnesses. |
+| `COST` | Low-precision training, MoE optimization, and training/inference costs. |
+| `ADAPT` | Model architecture support, checkpoint conversion, evaluation, and deployment. |
+| `COMMON` | Shared tooling, data, and infrastructure. |
+| `FREE` | Unclassified ideas and exploratory work. |
+
+Manage Programs in **Settings**. New team users start with `FREE` and can create their own directions; they do not inherit another user's task tree.
+
+## Documentation
+
+Some guides are currently available only in Chinese; their language is marked below.
+
+| Topic | Guide |
+| --- | --- |
+| Setup, CLI, and integrations | [Technical README](research-ops/README.md) — mixed English/Chinese |
+| Everyday workflow | [Quick start](docs/QUICKSTART.zh-CN.md), [User guide](research-ops/docs/USER_GUIDE.zh-CN.md) — Chinese |
+| Identity and account selection | [Identity switching](research-ops/docs/identity-switching.md) |
+| Additional runtimes | [Claude Code](research-ops/docs/CLAUDE_RUNTIME.md), [Pi](research-ops/docs/PI_RUNTIME.md) |
+| Periodic checks | [Scheduled checks](research-ops/docs/scheduled-checks.md) |
+| Persistent objectives | [Native Goal](research-ops/docs/NATIVE_GOAL.zh-CN.md) — Chinese |
+| Browser shell | [Web terminal](research-ops/docs/web-terminal.md) |
+| Multiple users | [Team deployment](research-ops/docs/team-mode.md) — Chinese |
+| Evaluation | [Agent Eval Harness](research-ops/docs/AGENT_EVAL_HARNESS.md) |
+| Workflow visualization | [On-demand workflows](research-ops/docs/session-workflows.md) |
+| Recovery | [Recovery guide](research-ops/RECOVERY.md) |
+| Sanitized release configuration | [Public release checks](docs/PUBLIC_RELEASE.zh-CN.md) — Chinese |
+
+## Development
+
+From `research-ops/`:
+
+```bash
+uv sync --extra dev
+npm --prefix web ci
+uv run pytest
+uv run ruff check backend tests
+npm --prefix web run lint
+npm --prefix web test
+```
+
+The backend uses FastAPI and SQLAlchemy; the frontend uses React, TypeScript, and Vite.
 
 ```text
 orbitree/
-  research-ops/    # 研究执行、会话和工作树管理
-  docs/            # 快速上手
+  README.md                 # English overview
+  README.zh-CN.md            # Chinese overview
+  research-ops/
+    backend/research_ops/    # API, state, runtime adapters, integrations
+    web/                     # React workspace
+    config/                  # Program seeds and example configuration
+    docs/                    # Runtime and operating guides
+  docs/                      # Getting started and release guidance
+  scripts/                   # Public-release checks
 ```
 
-Orbitree 的依赖和启动命令在其子目录中。进一步阅读：
+**Naming compatibility:** the product is Orbitree, but `research-ops/`, the `research_ops` Python module, the `rops` command, and `ROPS_*` settings retain their existing names.
 
-- [Orbitree README](research-ops/README.md)
-- [Orbitree 功能说明与文档索引](research-ops/README.md#文档索引)
+## Security and deployment boundaries
 
-## 安全与备份范围
+- **Use your own credentials.** No model logins, API keys, real session transcripts, databases, or private experiment outputs are included.
+- **Review permissions before enabling agents.** They run with the configured host user and runtime permissions. In particular, the example Claude configuration uses `bypassPermissions`; change it if that is not appropriate for your environment.
+- **Configure integrations explicitly.** LTP, AgentOS/Datawheel, Goblin, Octo, OneAPI, and notifications are adapters, not bundled hosted services or access grants.
+- **Treat team mode as a separate deployment.** It uses per-user accounts and filesystem restrictions, but does not protect users from the host administrator or provide VM-level isolation. Enterprise SSO, resource quotas, and cross-user shared projects are not implemented.
+- **Do not equate agent status with job status.** A completed conversation can leave an external job running; an active Goal can be waiting or disconnected.
+- **Keep runtime data out of Git.** `.env`, credentials, database files, session JSONL, logs, model weights, experiment artifacts, and private LTP bundles must remain local. Review staged files and scan for secrets before publishing changes.
 
-这个仓库只保存源码、示例配置、文档与脱敏截图。以下内容必须留在本地，且由 `.gitignore` 排除：
+## License and third-party assets
 
-- `.env`、API Key、Token、证书和私有凭据
-- SQLite/数据库文件、Codex 会话 JSONL、运行日志
-- 模型权重、训练输出、评测结果、外部服务导出
-- `research-ops/deploy/ltp/` 下的实验任务配置和运行回执
-- Python/Node 依赖目录和前端构建产物
+A project-wide open-source license has **not yet been selected**. The source is publicly available, but this README does not grant an additional license; check the repository's licensing status before adoption or redistribution.
 
-提交前应对暂存文件做密钥扫描，并运行 `git diff --cached --check` 和变更清单复核。示例地址、外部集成和历史检查说明见 [公开版配置与发布检查](docs/PUBLIC_RELEASE.zh-CN.md)。
+Background images retain their original licenses and attribution. See [theme asset sources](research-ops/web/public/themes/README.md).
