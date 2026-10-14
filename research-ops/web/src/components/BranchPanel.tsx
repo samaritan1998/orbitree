@@ -1845,7 +1845,7 @@ function LocalCodexButton({ branchId, hasThread }: { branchId: string; hasThread
       : status === "failed"
         ? "Copy failed"
         : hasThread ? "Continue locally" : "Start locally";
-  return <Tooltip content="Copy the managed Research Ops terminal command" relationship="description">
+  return <Tooltip content="Copy the managed Orbitree terminal command" relationship="description">
     <Button size="small" appearance="primary" icon={status === "copied" ? <Checkmark20Regular /> : <Play20Regular />} disabled={status === "copying"} onClick={copy}>
       {label}
     </Button>
@@ -2100,7 +2100,7 @@ function localImagePath(src: string): string | undefined {
 }
 
 function compactPrompt(prompt: string): string {
-  const normalized = prompt.replace(/<research_ops_brief>[\s\S]*?<\/research_ops_brief>/, "Research Ops brief").replace(/\s+/g, " ").trim();
+  const normalized = prompt.replace(/<research_ops_brief>[\s\S]*?<\/research_ops_brief>/, "Orbitree brief").replace(/\s+/g, " ").trim();
   return normalized.length > 96 ? `${normalized.slice(0, 93)}...` : normalized;
 }
 
@@ -2221,7 +2221,7 @@ function CodexSessionBar({
           onClick={() => copy("id")}
         />
       </Tooltip>
-      {runtime !== "pi" && <Tooltip content={`Advanced: copy the raw ${label} resume command without the managed Research Ops wrapper`} relationship="description">
+      {runtime !== "pi" && <Tooltip content={`Advanced: copy the raw ${label} resume command without the managed Orbitree wrapper`} relationship="description">
           <Button
             size="small"
             appearance="subtle"

@@ -1,6 +1,6 @@
 # Web Terminal
 
-`/terminal` provides one interactive shell per Research Ops runtime. It is a
+`/terminal` provides one interactive shell per Orbitree runtime. It is a
 terminal, not an AI conversation: input and output do not enter Results, Memory,
 Goals, notifications, or model prompts. Normal shell history policies still
 apply. Avoid putting credentials directly into commands.
@@ -15,7 +15,7 @@ ROPS_WEB_TERMINAL_CWD=/absolute/path/to/workspace
 ROPS_WEB_TERMINAL_SHELL=/bin/bash
 ```
 
-Build the frontend and restart Research Ops when conversations are idle. Keep
+Build the frontend and restart Orbitree when conversations are idle. Keep
 `ROPS_INFOFLOW_PUBLIC_BASE_URL` set to the browser's HTTPS origin; additional
 origins must be explicitly listed in `ROPS_ALLOWED_ORIGINS`. The reverse proxy
 must support WebSocket upgrades for `/api/ws/terminal`.
@@ -45,7 +45,7 @@ Codex login. A root single-user server gives the terminal root privileges.
 - Another browser can take control of the same shell. The old browser stops
   accepting input and does not automatically compete to reconnect.
 - Ctrl+C interrupts the shell's foreground command. Ending the terminal requires
-  confirmation and closes this tmux session. Other Research Ops conversations
+  confirmation and closes this tmux session. Other Orbitree conversations
   are not stopped. Detached jobs may outlive a shell, as in a local terminal.
 - An operating system reboot, killing tmux, or explicit terminal termination
   ends the shell. This is not a durable job scheduler.
@@ -62,7 +62,7 @@ Codex login. A root single-user server gives the terminal root privileges.
   explicit Escape and Tab controls.
 
 The tmux socket resides in a private per-UID, per-runtime temporary directory.
-Only allowlisted environment variables reach the shell; Research Ops model API
+Only allowlisted environment variables reach the shell; Orbitree model API
 keys are not automatically exported. Shell startup files can still load the
 user's own configuration. Terminal tickets are one-use, expire after 30 seconds,
 and are bound to the browser Origin. An unauthenticated status request never

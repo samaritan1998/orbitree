@@ -1187,7 +1187,7 @@ class AgentOSBatchSubmit(BaseModel):
     ``payload`` is sent to AgentOS as-is, but only a redacted structural
     snapshot is persisted locally.  Callers should reference credentials via
     their configured environment/secret mechanism rather than putting them in
-    Research Ops state.
+    Orbitree state.
     """
 
     work_item_id: str

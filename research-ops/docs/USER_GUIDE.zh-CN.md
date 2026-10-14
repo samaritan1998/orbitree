@@ -1,4 +1,4 @@
-# Research Ops 使用手册
+# Orbitree 使用手册
 
 默认访问地址：<http://127.0.0.1:8020/>。远程部署的地址和登录方式由部署者配置；`https://research.example.com/` 仅为示例。
 
@@ -262,20 +262,20 @@ Session，也不需要额外 API Key。点击 `Name windows` 可以重新为尚�
 这里有两棵彼此独立、但可以对齐的树：
 
 ```text
-Codex Lineage                       Research Ops
+Codex Lineage                       Orbitree
 root thread                         Program
   └── forked child thread    <->      └── WorkItem
         └── forked grandchild                 └── Branch
 ```
 
 - Codex Lineage 是已有对话的事实关系，扫描时自动发现，不需要手工登记。
-- Research Ops 树表示工作归属，由你通过 Attach 决定。
+- Orbitree 树表示工作归属，由你通过 Attach 决定。
 - Attach 不会修改 Codex Lineage；把窗口换到另一个方向后，原始父子关系仍然保留。
 - 父 Thread 暂时没有扫描到时，子 Thread 会作为当前可见树的根展示；父项出现后会自动归位。
 
 | 状态 | 含义 |
 | --- | --- |
-| Unassigned | 检测到仍在运行的 Codex，但尚未关联 Research Ops 工作 |
+| Unassigned | 检测到仍在运行的 Codex，但尚未关联 Orbitree 工作 |
 | Managed | 已经关联 WorkItem / Branch，最终结果会同步到 Results |
 | Saved | 当前没有运行进程，但 Thread 仍可通过 `codex resume` 恢复 |
 | Ignored | 仅从默认列表隐藏；进程、Thread 和文件均不受影响 |
@@ -467,7 +467,7 @@ bundle 目录至少包含 `config.yaml` 和 `run.sh`。正式训练还必须使�
 日报会综合系统当天能追踪到的 Web/本地 Codex 完成轮次、失败或中断的请求、Branch Result、
 Jobs、Activity 和已记录 Memory，但按 `Work ID + 任务标题` 组织结果，而不是按对话轮次罗列。
 它输出任务总览、今日完成、经验候选、不足、优化动作和明日焦点，每个重要判断都带 evidence ID。
-turn/job 数只在报告底部作为覆盖诊断。未注册到 Research Ops 的终端工作无法读取全文，页面会明确显示
+turn/job 数只在报告底部作为覆盖诊断。未注册到 Orbitree 的终端工作无法读取全文，页面会明确显示
 `unassigned windows` 和覆盖限制，不能把“未看到”理解成“没有发生”。
 
 服务午夜不可用时，恢复后会自动补跑最近一个完整日期；也可以点击 `Run previous day` 手工
@@ -524,7 +524,7 @@ Branch 得到明确结果后，点击顶部的 Result 图标。
 
 选择 Request merge 后，它会进入左侧 `Merge Queue`。在 Merge Queue 中由人工决定 Merge、Park 或 Abandon。
 
-注意：Merge Queue 首先合并的是 Research Ops 中的结果和分支状态。代码是否需要 Git merge，仍应结合 Branch 的 worktree 和实际提交进行检查。
+注意：Merge Queue 首先合并的是 Orbitree 中的结果和分支状态。代码是否需要 Git merge，仍应结合 Branch 的 worktree 和实际提交进行检查。
 
 ## Repositories 和 worktree
 
@@ -570,7 +570,7 @@ uv run rops server restart-when-idle
 Pi 通过 JSONL RPC 运行，Web 可以使用 `steer`、`follow-up` 和 `abort`。只有收到完整的
 `agent_settled` 后，这一轮才会被标记为完成。通过 New work 选择 Pi 时，创建的是原生 Pi
 Main Branch，第一条 Web 消息会建立 Pi session，不包含 Codex 历史 handoff。Pi 的会话树不会
-自动变成 Research Ops Branch，避免模型自行 fork 造成任务树漂移。
+自动变成 Orbitree Branch，避免模型自行 fork 造成任务树漂移。
 
 同一时间一个 Pi 会话只能由一个进程写入。Web 管理的 Pi RPC 会话不会同时交给本地 Pi TUI；
 Pi Branch 页面会隐藏 Start/Continue locally，`rops open`
@@ -606,7 +606,7 @@ Codex 模式下，Branch 顶部的主按钮会复制类似命令：
 
 这个包装命令会获取 Branch lease、启动或恢复 Codex、绑定真实 Session ID、每 15 秒 heartbeat、同步每轮最终回答，并在终端退出时结束 Session。`Raw resume` 只用于高级恢复；直接使用它不会获得这些管理能力。
 
-也可以使用 Research Ops CLI：
+也可以使用 Orbitree CLI：
 
 ```bash
 cd /srv/research-ops/app
@@ -731,7 +731,7 @@ cd /srv/research-ops/app
 本地数据库和 `/root/.codex/sessions`，不依赖 8020。这套启动与恢复方式不使用 Docker 或镜像。
 
 当前部署实例为了访问 Branch 外的 CFS 数据、集群工具和 LTP，使用
-`ROPS_CODEX_SANDBOX=danger-full-access`。这意味着 Codex 以 Research Ops 服务用户的权限执行
+`ROPS_CODEX_SANDBOX=danger-full-access`。这意味着 Codex 以 Orbitree 服务用户的权限执行
 命令；只应在受控的内部宿主机上使用，不要在公网暴露该实例，也不要在对话中提供凭据。
 
 ## 最简单的日常习惯

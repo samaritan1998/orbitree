@@ -1,6 +1,10 @@
-# Research Ops
+# Orbitree
 
-面向模型研究工作的本地优先执行工作台。Research Ops 管理方向、任务、分支、Codex/Claude Code/Pi 会话、工作目录、外部任务和结果，让一项工作可以继续、分叉和回看。本仓库只维护 Research Ops；不包含技术情报采集系统。
+> A self-hosted workspace for AI-assisted research and engineering.
+
+面向模型研究工作的本地优先执行工作台。Orbitree 管理方向、任务、分支、Codex/Claude Code/Pi 会话、工作目录、外部任务和结果，让一项工作可以继续、分叉和回看。本仓库只维护 Orbitree；不包含技术情报采集系统。
+
+公开产品名称为 **Orbitree**。为保持现有部署兼容，源码目录 `research-ops/`、Python 模块 `research_ops`、CLI 命令 `rops` 和配置前缀 `ROPS_*` 保留原名。
 
 ```mermaid
 flowchart LR
@@ -12,7 +16,7 @@ flowchart LR
     F --> C
 ```
 
-## Research Ops 功能一览
+## Orbitree 功能一览
 
 | 工作环节 | 功能 | 入口或说明 |
 | --- | --- | --- |
@@ -23,7 +27,7 @@ flowchart LR
 | 评测与资源 | Agent Eval Harness、LTP 任务监控、只读集群资源视图 | `/evals`、`/ltp-monitor`、`/clusters`；依赖对应外部服务 |
 | 管理与扩展 | 浏览器终端、仓库、多人账号与个人方向 | `/terminal`、`/repositories`、`/settings`；多人入口单独部署 |
 
-Research Ops 的[完整功能导航与边界](research-ops/README.md#功能导航)列出了哪些功能默认可用、哪些需要额外配置。系统不自动替用户创建 Fork，也不向普通对话注入平台提示词。
+Orbitree 的[完整功能导航与边界](research-ops/README.md#功能导航)列出了哪些功能默认可用、哪些需要额外配置。系统不自动替用户创建 Fork，也不向普通对话注入平台提示词。
 
 ## 适用方向
 
@@ -39,7 +43,7 @@ Research Ops 的[完整功能导航与边界](research-ops/README.md#功能导�
 
 ## 截图
 
-Research Ops 的 Program 图展示工作项和显式 fork 的关系。图中的节点只表示用户选择保留的工作路径；Codex 内部 subagent 不会把页面淹没。
+Orbitree 的 Program 图展示工作项和显式 fork 的关系。图中的节点只表示用户选择保留的工作路径；Codex 内部 subagent 不会把页面淹没。
 
 ![Program work tree](research-ops/docs/images/program-tree.png)
 
@@ -54,7 +58,8 @@ Research Ops 的 Program 图展示工作项和显式 fork 的关系。图中的�
 ### 1. 安装与启动
 
 ```bash
-cd research-ops
+git clone https://github.com/samaritan1998/orbitree.git
+cd orbitree/research-ops
 cp .env.example .env
 scripts/install-host.sh --no-service
 .venv/bin/rops server start
@@ -64,26 +69,26 @@ scripts/install-host.sh --no-service
 
 ### 2. 日常工作流
 
-1. 在 Research Ops 选择方向；想法还不清楚时使用 `Create scratch work`，明确时使用 `New work`。
+1. 在 Orbitree 选择方向；想法还不清楚时使用 `Create scratch work`，明确时使用 `New work`。
 2. 在任务详情直接发起一轮 Web 对话，或点击 `Start locally` / `Continue locally`，将命令粘贴到同一台服务器的终端。
 3. 在所选的 Codex、Claude Code 或 Pi 中完成调试、代码、训练、部署或评测。Web 汇总可见进度和已完成轮次的结果；同步时机因运行时而异。
 4. 有独立假设时显式 `Fork`；新的目标则创建 Work，不要求为每个想法分叉。
 5. 一轮结束后按需保存 Handoff；可选择提取候选 Skill，人工审核后才安装。
 
-完整操作说明见 [快速上手](docs/QUICKSTART.zh-CN.md) 和 [Research Ops 使用手册](research-ops/docs/USER_GUIDE.zh-CN.md)。
+完整操作说明见 [快速上手](docs/QUICKSTART.zh-CN.md) 和 [Orbitree 使用手册](research-ops/docs/USER_GUIDE.zh-CN.md)。
 
 ## 仓库结构
 
 ```text
-ms-workflow/
+orbitree/
   research-ops/    # 研究执行、会话和工作树管理
   docs/            # 快速上手
 ```
 
-Research Ops 的依赖和启动命令在其子目录中。进一步阅读：
+Orbitree 的依赖和启动命令在其子目录中。进一步阅读：
 
-- [Research Ops README](research-ops/README.md)
-- [Research Ops 功能说明与文档索引](research-ops/README.md#文档索引)
+- [Orbitree README](research-ops/README.md)
+- [Orbitree 功能说明与文档索引](research-ops/README.md#文档索引)
 
 ## 安全与备份范围
 

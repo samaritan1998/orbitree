@@ -1,6 +1,6 @@
 # Native Goal
 
-Research Ops 使用 Codex 的原生 `thread/goal/*` 接口。Web 的 Goal 与同一会话中 TUI `/goal` 读取的是同一份状态，自动继续和完成判断由 Codex 执行。
+Orbitree 使用 Codex 的原生 `thread/goal/*` 接口。Web 的 Goal 与同一会话中 TUI `/goal` 读取的是同一份状态，自动继续和完成判断由 Codex 执行。
 
 ## 设置目标
 
@@ -9,7 +9,7 @@ Research Ops 使用 Codex 的原生 `thread/goal/*` 接口。Web 的 Goal 与同
 3. 按需填写 Token budget。留空表示没有 Goal 专属 Token 上限。
 4. 点击 `Start goal`。
 
-目标文字原样传给 Codex。Research Ops 不拼接目标说明、不补写验收条件、不追加调度提示词，也不使用“再继续一轮”的消息循环。既有会话历史、仓库指令和所选身份保持不变。
+目标文字原样传给 Codex。Orbitree 不拼接目标说明、不补写验收条件、不追加调度提示词，也不使用“再继续一轮”的消息循环。既有会话历史、仓库指令和所选身份保持不变。
 
 目标绑定启动时的身份、模型和推理强度。修改“下一轮”的配置不会悄悄改变正在运行的 Goal。
 
@@ -23,9 +23,9 @@ Goals 标签页显示最近检查时间、最近活动、最近输出、恢复�
 | --- | --- |
 | Running | Codex 报告线程正在执行 |
 | Waiting for next turn | 线程已加载，当前没有正在执行的轮次 |
-| Runtime disconnected | 目标存在，但 Research Ops 尚未连接执行线程 |
+| Runtime disconnected | 目标存在，但 Orbitree 尚未连接执行线程 |
 | Recovering / Retry scheduled | 正在恢复连接，或等待已记录的重试时间 |
-| Owned by another Codex process | 线程由其他进程持有，Research Ops 没有接管 |
+| Owned by another Codex process | 线程由其他进程持有，Orbitree 没有接管 |
 | Execution failed | 执行或恢复失败，查看错误后可手动 Reconnect |
 
 ## 恢复与通知

@@ -148,7 +148,7 @@ sidecar 和 adapter 环境注入，不进入 task 或 trajectory。
 
 正式链路完全在 Kubernetes 中运行，不依赖提交端的 Docker daemon，也不会在 runtime
 Pod 内挂 Docker socket。Reward adapter 和 PPT runtime 是两个独立 Deployment：前者
-从 CFS 只读挂载 Research Ops、SlideForgePipeline 和 8 条 task bundle；后者通过
+从 CFS 只读挂载 Orbitree、SlideForgePipeline 和 8 条 task bundle；后者通过
 ServiceAccount 按 episode 创建隔离的 policy Pod 和 clean-renderer Pod。模型 key 引用
 专用的 `openreward-ppt-model` Kubernetes Secret；部署脚本在集群内生成 `runtime_token`
 与 `rubric_token`，只保存到 `openreward-ppt-auth` Secret，不打印明文：

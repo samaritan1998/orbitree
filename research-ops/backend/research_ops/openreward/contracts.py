@@ -1,7 +1,7 @@
 """Machine-readable configuration contract for real ORS domain backends.
 
 The contract stores environment-variable *names* and non-secret operation
-descriptions only.  Runtime values remain outside Research Ops state and are
+descriptions only.  Runtime values remain outside Orbitree state and are
 never included in readiness reports.
 """
 

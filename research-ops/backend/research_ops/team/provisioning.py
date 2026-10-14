@@ -34,7 +34,7 @@ def worker_running(root: Path, username: str) -> bool:
         if process.stat().st_uid != policy["uid"]:
             raise RuntimeError("Worker PID no longer belongs to this account")
         if b"research_ops.team.worker" not in (process / "cmdline").read_bytes().split(b"\0"):
-            raise RuntimeError("Worker PID is not a Research Ops worker")
+            raise RuntimeError("Worker PID is not a Orbitree worker")
     except FileNotFoundError:
         return False
     return True

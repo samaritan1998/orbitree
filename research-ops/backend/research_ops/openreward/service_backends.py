@@ -4,7 +4,7 @@ The public OpenReward server owns sessions, tool schemas, SSE, rewards and
 termination.  Domain runtimes (a SWE sandbox, an Office/PPT service, or a
 stateful tool registry) often already exist behind an internal HTTP API.  This
 module adapts those services to the small :class:`EnvironmentBackend` contract
-without baking any endpoint or credential into Research Ops.
+without baking any endpoint or credential into Orbitree.
 
 All endpoint and credential *values* are resolved from environment variables
 at request time.  Only their variable names live in the versioned backend
@@ -555,7 +555,7 @@ class RemoteServiceBackend:
 
 
 class RemoteORSBackend:
-    """Proxy an OpenReward environment behind the unified Research Ops ORS."""
+    """Proxy an OpenReward environment behind the unified Orbitree ORS."""
 
     replace_environment_tools = True
 

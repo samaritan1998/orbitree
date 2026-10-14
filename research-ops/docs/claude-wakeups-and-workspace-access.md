@@ -1,6 +1,6 @@
 # Claude Web Wakeups and Workspace Access
 
-Research Ops persists successful `ScheduleWakeup` calls observed in a live
+Orbitree persists successful `ScheduleWakeup` calls observed in a live
 Claude Web turn. The one-shot wakeup appears under the existing clock control,
 separately from user-configured periodic checks. No historical JSONL is imported
 into the scheduler.
@@ -56,6 +56,6 @@ the allowlist should be narrowed or explicitly reviewed, not broadened to a
 workspace root.
 
 After changing launcher source, install it as the root-owned file used by the
-`claude-dmit` wrapper. This is independent of a Research Ops server restart and
+`claude-dmit` wrapper. This is independent of a Orbitree server restart and
 only affects subsequent process launches. Server/UI wakeup changes require the
 usual tested release and an idle restart.

@@ -108,7 +108,7 @@ beforeEach(() => {
   cleanup();
   window.localStorage.clear();
   window.history.replaceState({}, "", "/today");
-  document.title = "Research Ops";
+  document.title = "Orbitree";
 });
 
 test("renders the operational shell", async () => {
@@ -117,7 +117,7 @@ test("renders the operational shell", async () => {
     <QueryClientProvider client={client}><App /></QueryClientProvider>,
   );
   expect(await screen.findByRole("heading", { name: "Today" })).toBeInTheDocument();
-  await waitFor(() => expect(document.title).toBe("今日 | Research Ops"));
+  await waitFor(() => expect(document.title).toBe("今日 | Orbitree"));
   expect(screen.getAllByRole("button", { name: "New work" })).toHaveLength(2);
   const workRow = screen.getByRole("button", { name: "Open HARN-0001: Verifier task" });
   expect(workRow.querySelector("button")).toBeNull();
@@ -125,7 +125,7 @@ test("renders the operational shell", async () => {
   expect(createScratch).toHaveAttribute("aria-describedby", "scratch-work-description");
   fireEvent.click(createScratch);
   await waitFor(() => expect(window.location.pathname).toBe("/programs/FREE/work/FREE-0001/results"));
-  await waitFor(() => expect(document.title).toBe("FREE-0001 · 未命名工作 FREE-0001 | Research Ops"));
+  await waitFor(() => expect(document.title).toBe("FREE-0001 · 未命名工作 FREE-0001 | Orbitree"));
   expect(await screen.findByRole("status")).toHaveTextContent("Created FREE-0001");
   fireEvent.click(screen.getByRole("button", { name: "Undo" }));
   await waitFor(() => expect(window.location.pathname).toBe("/today"));
@@ -217,6 +217,6 @@ test("restores advanced views from deep links and browser history", async () => 
   window.history.replaceState({}, "", "/skills?view=proposals");
   fireEvent.popState(window);
   expect(await screen.findByRole("heading", { name: "技能审核" })).toBeInTheDocument();
-  await waitFor(() => expect(document.title).toBe("技能审核 | Research Ops"));
+  await waitFor(() => expect(document.title).toBe("技能审核 | Orbitree"));
   expect(window.location.search).toBe("?view=proposals");
 });

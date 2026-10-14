@@ -1,7 +1,7 @@
 # Claude Code runtime
 
-Research Ops can run a Branch with the locally installed Claude Code-compatible CLI. Authentication
-remains owned by that CLI; Research Ops does not read, copy, or persist account credentials.
+Orbitree can run a Branch with the locally installed Claude Code-compatible CLI. Authentication
+remains owned by that CLI; Orbitree does not read, copy, or persist account credentials.
 
 ## Setup
 
@@ -55,7 +55,7 @@ the administrator-registered executable.
 An exact entry in `sessions` still takes precedence and retains its registered
 directory and permission mode. Unregistered `--print` or stream-mode invocations
 keep the original fallback identity, so adding the TUI default does not silently
-move existing Research Ops Web conversations to a different account. Deploy the
+move existing Orbitree Web conversations to a different account. Deploy the
 launcher to `/usr/local/libexec/research-ops-claude-user.py`; this change only
 affects subsequent launches and does not require a Web service restart.
 
@@ -114,11 +114,11 @@ platform policy, or new execution objective is added. Unchecking the option crea
 conversation without importing source context.
 
 Claude sessions are identified by UUID and persisted by the CLI under its normal `~/.claude` storage.
-Research Ops keeps only the session identifier and normalized Results/Live activity records.
+Orbitree keeps only the session identifier and normalized Results/Live activity records.
 
 ## Workspace handoff and approvals
 
-For a scratch-workspace Claude fork, Research Ops snapshots small source files and documentation
+For a scratch-workspace Claude fork, Orbitree snapshots small source files and documentation
 into the independent child directory, including uncommitted files. The private
 `.research-ops-workspace-snapshot.json` records source paths, hashes and exclusions. Existing child
 files are never overwritten. Git metadata, credentials, dependencies, model weights, caches and

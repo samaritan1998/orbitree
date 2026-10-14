@@ -17,7 +17,7 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 # These are suggestions only. The input remains free-form so a newly deployed
-# gateway model does not require a Research Ops release.
+# gateway model does not require a Orbitree release.
 MODEL_PRESETS = (
     "gpt-6-astra",
     "gpt-5.6-sol",

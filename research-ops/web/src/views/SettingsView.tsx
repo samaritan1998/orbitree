@@ -94,7 +94,7 @@ export default function SettingsView() {
       <header className="page-header settings-header">
         <div>
           <div className="settings-title-line"><Settings20Regular /><h1>Settings</h1></div>
-          <p>Choose the model and reasoning level used by new Research Ops turns.</p>
+          <p>Choose the model and reasoning level used by new Orbitree turns.</p>
         </div>
         <div className="settings-source">
           {data.source === "platform" ? <CheckmarkCircle20Regular /> : <Warning20Regular />}
@@ -123,7 +123,7 @@ export default function SettingsView() {
 
       <form className="settings-form" onSubmit={(event) => { event.preventDefault(); if (!invalid) save.mutate(); }}>
         <section className="settings-section">
-          <header><div><h2>Codex / Web</h2><p>Used for Web turns, local Codex launches managed by Research Ops, and daily reflections.</p></div></header>
+          <header><div><h2>Codex / Web</h2><p>Used for Web turns, local Codex launches managed by Orbitree, and daily reflections.</p></div></header>
           <div className="settings-fields">
             <Field label="Model" required hint="Enter any model ID accepted by your configured gateway.">
               <Input list="runtime-model-presets" value={codexModel} onChange={(_, value) => setCodexModel(value.value)} />

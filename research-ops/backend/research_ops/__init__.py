@@ -1,3 +1,3 @@
-"""Research Ops control plane."""
+"""Orbitree control plane."""
 
 __version__ = "0.1.0"

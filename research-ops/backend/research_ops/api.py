@@ -505,7 +505,7 @@ def create_app(
             if state.claude is not state.codex and state.claude is not state.pi:
                 await state.claude.stop()
 
-    app = FastAPI(title="Research Ops", version="0.1.0", lifespan=lifespan)
+    app = FastAPI(title="Orbitree", version="0.1.0", lifespan=lifespan)
     app.state.rops = state
     app.add_middleware(
         CORSMiddleware,
@@ -522,7 +522,7 @@ def create_app(
         app.add_middleware(WorkerTokenMiddleware, token=settings.access_token)
     if ors_server is not None:
         # Mounting keeps the standard ORS paths intact below a configurable
-        # prefix while leaving the existing Research Ops API untouched.
+        # prefix while leaving the existing Orbitree API untouched.
         app.mount(
             "/openreward",
             ors_server.create_app(),

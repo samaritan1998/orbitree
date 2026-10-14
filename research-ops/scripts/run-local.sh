@@ -5,7 +5,7 @@ ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT"
 
 if [[ ! -x .venv/bin/rops ]]; then
-  echo "Research Ops is not installed. Run scripts/install-host.sh first." >&2
+  echo "Orbitree is not installed. Run scripts/install-host.sh first." >&2
   exit 1
 fi
 

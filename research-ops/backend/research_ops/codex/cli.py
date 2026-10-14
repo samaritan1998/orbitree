@@ -118,7 +118,7 @@ class CliCodexAdapter:
             raise CodexUnavailable(f"Unable to fork persisted Codex thread: {exc}") from exc
         finally:
             # App Server's fork operation keeps a thread-store writer open for
-            # the returned child. Normal Research Ops turns use the official
+            # the returned child. Normal Orbitree turns use the official
             # CLI, so leave the lineage process stopped after the fork; this
             # releases the lock before the child is resumed by Web/CLI.
             with contextlib.suppress(Exception):

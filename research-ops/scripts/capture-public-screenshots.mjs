@@ -62,10 +62,13 @@ try {
     await route.fulfill({ json: body });
   });
   await page.goto(`${origin}/programs/HARN`);
+  await expect(page.getByText("Orbitree", { exact: true }).first()).toBeVisible();
+  await expect(page).toHaveTitle(/Orbitree/);
   await expect(page.getByText(work.title).first()).toBeVisible();
   await expect(page.getByText(child.name).first()).toBeVisible();
   await page.screenshot({ path: `${output}/program-tree.png`, fullPage: true, animations: "disabled" });
   await page.goto(`${origin}/programs/HARN/branches/example-main/results`);
+  await expect(page).toHaveTitle(/Orbitree/);
   await expect(page.getByText("The baseline and layout variant are ready for review.")).toBeVisible();
   await page.screenshot({ path: `${output}/live-activity.png`, fullPage: true, animations: "disabled" });
   assert.deepEqual(errors, []);

@@ -85,7 +85,7 @@ ppt:
 # ToolUse needs a resettable task session.  The model sees only registered
 # schemas; service credentials remain behind the ORS backend.
 tooluse:
-  # EnvCommons/ToolathlonGym already speaks ORS. Research Ops proxies its
+  # EnvCommons/ToolathlonGym already speaks ORS. Orbitree proxies its
   # prompt, task-specific tools, session lifecycle and claim_done reward.
   adapter: openreward-proxy
   service_base_url_env: ORS_TOOLUSE_SERVICE_URL

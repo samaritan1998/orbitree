@@ -1,4 +1,4 @@
-# Research Ops Recovery
+# Orbitree Recovery
 
 浏览器入口由部署者配置；`https://research.example.com/` 仅为示例域名。
 服务器本地的健康检查及 CLI 控制地址为 `http://127.0.0.1:8020`。如果部署者配置了登录网关，未登录请求的跳转不代表后端服务停止。

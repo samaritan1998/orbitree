@@ -29,7 +29,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
 
 def _load_teacher_route_validator() -> tuple[type[Exception], Any]:
-    """Load the lightweight resolver without importing Research Ops server deps."""
+    """Load the lightweight resolver without importing Orbitree server deps."""
 
     path = PROJECT_ROOT / "backend" / "research_ops" / "openreward" / "teacher_routing.py"
     spec = importlib.util.spec_from_file_location("_openreward_teacher_routing", path)

@@ -1425,7 +1425,7 @@ def test_repository_registration_creates_real_worktree(client: TestClient, tmp_p
         cwd=source,
         check=True,
     )
-    subprocess.run(["git", "config", "user.name", "Research Ops Test"], cwd=source, check=True)
+    subprocess.run(["git", "config", "user.name", "Orbitree Test"], cwd=source, check=True)
     (source / "README.md").write_text("registered\n", encoding="utf-8")
     subprocess.run(["git", "add", "README.md"], cwd=source, check=True)
     subprocess.run(["git", "commit", "-m", "initial"], cwd=source, check=True)

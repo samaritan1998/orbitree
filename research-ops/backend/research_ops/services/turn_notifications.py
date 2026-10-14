@@ -267,7 +267,7 @@ class TurnNotificationService:
             }.get(notification.kind, notification.kind)
             observed = _as_utc(notification.created_at).astimezone(ZoneInfo("Asia/Shanghai"))
             lines = [
-                f"Research Ops · 定时检查 · {label}",
+                f"Orbitree · 定时检查 · {label}",
                 f"[{code}] {work.human_id} · {work.title or '未命名工作'}",
                 f"Branch：{branch.name}",
                 f"Session ID：{branch.codex_thread_id or '尚未创建'}",
@@ -323,7 +323,7 @@ class TurnNotificationService:
                 title = "目标等待重试"
             observed = _as_utc(notification.created_at).astimezone(ZoneInfo("Asia/Shanghai"))
             lines = [
-                f"Research Ops · {title}",
+                f"Orbitree · {title}",
                 f"[{code}] {work.human_id} · {work.title.strip() or '未命名工作'}",
                 f"Branch：{branch.name}",
                 f"Codex Session ID：{data.get('thread_id')}",
@@ -389,7 +389,7 @@ class TurnNotificationService:
             url = self._results_url(code, branch.id)
             return "\n".join(
                 (
-                    "Research Ops · 一轮已完成",
+                    "Orbitree · 一轮已完成",
                     f"[{code}] {work.human_id} · {title}",
                     f"Branch：{branch.name}",
                     f"{runtime_label} Session ID：{turn.thread_id}",
@@ -424,7 +424,7 @@ class TurnNotificationService:
             failed = _as_utc(message.updated_at).astimezone(ZoneInfo("Asia/Shanghai"))
             return "\n".join(
                 (
-                    "Research Ops · 对话失败",
+                    "Orbitree · 对话失败",
                     f"[{code}] {work.human_id} · {title}",
                     f"Branch：{branch.name}",
                     f"来源：{self._source_label(attempt)}",

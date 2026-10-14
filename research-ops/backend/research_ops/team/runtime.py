@@ -50,7 +50,7 @@ def linux_name(username: str) -> str:
 def validate_release(release: Path) -> Path:
     release = release.resolve()
     if not (release / "backend/research_ops/team/runtime.py").is_file():
-        raise ValueError("Release must contain the Research Ops backend")
+        raise ValueError("Release must contain the Orbitree backend")
     if (release / ".env").exists() or (release / "data/research-ops.db").exists():
         raise ValueError("Use a clean shared release, not the owner's live source/data directory")
     if release.stat().st_uid != 0 or release.stat().st_mode & 0o022:
@@ -357,7 +357,7 @@ def stop_worker(root: Path, username: str) -> None:
     try:
         command = (proc / "cmdline").read_bytes().split(b"\0")
         if proc.stat().st_uid != policy["uid"] or b"research_ops.team.worker" not in command:
-            raise ValueError("PID is not this Research Ops worker; refusing to signal it")
+            raise ValueError("PID is not this Orbitree worker; refusing to signal it")
         if libc.pidfd_send_signal(process_handle, signal.SIGTERM, None, 0) < 0:
             raise OSError(ctypes.get_errno(), "Could not signal the worker process")
     finally:

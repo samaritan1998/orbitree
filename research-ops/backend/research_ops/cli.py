@@ -43,10 +43,10 @@ from research_ops.team.cli import app as team_app
 
 app = typer.Typer(
     no_args_is_help=True,
-    help="Research Ops local control plane",
+    help="Orbitree local control plane",
     pretty_exceptions_show_locals=False,
 )
-server_app = typer.Typer(help="Manage the detached Research Ops Web service")
+server_app = typer.Typer(help="Manage the detached Orbitree Web service")
 eval_app = typer.Typer(help="Run distributed Agent Eval Harness workers")
 job_app = typer.Typer(help="Submit and inspect logical compute jobs")
 auth_app = typer.Typer(help="Manage explicit Codex identities without exposing credentials")
@@ -178,7 +178,7 @@ def _print_managed_job(payload: dict[str, object]) -> None:
 @job_app.command("submit")
 def submit_managed_job(
     bundle: Annotated[Path, typer.Argument(help="Directory containing config.yaml and run.sh")],
-    work_id: Annotated[str, typer.Option("--work", help="Research Ops Work ID")],
+    work_id: Annotated[str, typer.Option("--work", help="Orbitree Work ID")],
     hardware: Annotated[str, typer.Option(help="Hardware class: b or h100")],
     job_kind: Annotated[
         str,
@@ -199,11 +199,11 @@ def submit_managed_job(
     ] = None,
     control_url: Annotated[
         str,
-        typer.Option(envvar="ROPS_CONTROL_URL", help="Research Ops base URL"),
+        typer.Option(envvar="ROPS_CONTROL_URL", help="Orbitree base URL"),
     ] = "http://127.0.0.1:8020",
     token_env: Annotated[
         str,
-        typer.Option(help="Environment variable containing the Research Ops access token"),
+        typer.Option(help="Environment variable containing the Orbitree access token"),
     ] = "ROPS_ACCESS_TOKEN",
     json_output: Annotated[bool, typer.Option("--json", help="Print JSON")] = False,
 ) -> None:
@@ -274,7 +274,7 @@ def managed_job_status(
     job_id: Annotated[str, typer.Argument(help="Logical job ID")],
     control_url: Annotated[
         str,
-        typer.Option(envvar="ROPS_CONTROL_URL", help="Research Ops base URL"),
+        typer.Option(envvar="ROPS_CONTROL_URL", help="Orbitree base URL"),
     ] = "http://127.0.0.1:8020",
     token_env: Annotated[str, typer.Option()] = "ROPS_ACCESS_TOKEN",
     json_output: Annotated[bool, typer.Option("--json")] = False,
@@ -303,7 +303,7 @@ def list_managed_jobs(
     limit: Annotated[int, typer.Option(min=1, max=500)] = 100,
     control_url: Annotated[
         str,
-        typer.Option(envvar="ROPS_CONTROL_URL", help="Research Ops base URL"),
+        typer.Option(envvar="ROPS_CONTROL_URL", help="Orbitree base URL"),
     ] = "http://127.0.0.1:8020",
     token_env: Annotated[str, typer.Option()] = "ROPS_ACCESS_TOKEN",
     json_output: Annotated[bool, typer.Option("--json")] = False,
@@ -413,14 +413,14 @@ def _start_detached_server(settings: Settings, host: str, port: int) -> int:
     if stale_pid and _process_alive(stale_pid):
         if _owned_supervisor(stale_pid):
             raise RuntimeError(
-                f"Research Ops supervisor {stale_pid} is alive but port {port} is not healthy; "
+                f"Orbitree supervisor {stale_pid} is alive but port {port} is not healthy; "
                 "run `rops server restart`"
             )
         raise RuntimeError(f"PID file points to unrelated process {stale_pid}")
     pid_path.unlink(missing_ok=True)
     executable = PROJECT_ROOT / ".venv" / "bin" / "rops"
     if not executable.is_file():
-        raise RuntimeError(f"Research Ops executable is unavailable: {executable}")
+        raise RuntimeError(f"Orbitree executable is unavailable: {executable}")
     with log_path.open("ab") as log_handle:
         process = subprocess.Popen(
             [
@@ -448,12 +448,12 @@ def _start_detached_server(settings: Settings, host: str, port: int) -> int:
             return process.pid
         if process.poll() is not None:
             pid_path.unlink(missing_ok=True)
-            raise RuntimeError(f"Research Ops supervisor exited; inspect {log_path}")
+            raise RuntimeError(f"Orbitree supervisor exited; inspect {log_path}")
         time.sleep(0.25)
     if _process_alive(process.pid):
         os.kill(process.pid, signal.SIGTERM)
     pid_path.unlink(missing_ok=True)
-    raise RuntimeError(f"Research Ops did not become healthy; inspect {log_path}")
+    raise RuntimeError(f"Orbitree did not become healthy; inspect {log_path}")
 
 
 def _stop_detached_server(settings: Settings, port: int) -> bool:
@@ -462,7 +462,7 @@ def _stop_detached_server(settings: Settings, port: int) -> bool:
     if pid is None:
         if _server_healthy(port):
             raise RuntimeError(
-                f"Port {port} is serving Research Ops without a managed PID; stop it manually"
+                f"Port {port} is serving Orbitree without a managed PID; stop it manually"
             )
         return False
     if not _process_alive(pid):
@@ -505,7 +505,7 @@ def eval_worker_command(
         typer.Option(
             "--control-url",
             envvar="ROPS_EVAL_CONTROL_URL",
-            help="Research Ops base URL",
+            help="Orbitree base URL",
         ),
     ] = "http://127.0.0.1:8020",
     worker_id: Annotated[str, typer.Option(help="Stable worker prefix")] = "",
@@ -625,7 +625,7 @@ def supervise(
     signal.signal(signal.SIGINT, request_stop)
     while not stopping:
         typer.echo(
-            f"[{datetime.now(UTC).isoformat()}] starting Research Ops on {host}:{port}",
+            f"[{datetime.now(UTC).isoformat()}] starting Orbitree on {host}:{port}",
             err=True,
         )
         child = subprocess.Popen(
@@ -657,14 +657,14 @@ def server_start(
         typer.echo(str(exc), err=True)
         raise typer.Exit(1) from exc
     state = "already running" if pid == 0 else f"supervisor PID {pid}"
-    typer.echo(f"Research Ops {state}: http://127.0.0.1:{selected_port}")
+    typer.echo(f"Orbitree {state}: http://127.0.0.1:{selected_port}")
 
 
 @server_app.command("stop")
 def server_stop(
     port: Annotated[int | None, typer.Option(help="Health-check port")] = None,
 ) -> None:
-    """Stop the detached Research Ops supervisor and Web service."""
+    """Stop the detached Orbitree supervisor and Web service."""
     settings = get_settings()
     selected_port = port or settings.port
     try:
@@ -672,7 +672,7 @@ def server_stop(
     except RuntimeError as exc:
         typer.echo(str(exc), err=True)
         raise typer.Exit(1) from exc
-    typer.echo("Research Ops stopped" if stopped else "Research Ops is not running")
+    typer.echo("Orbitree stopped" if stopped else "Orbitree is not running")
 
 
 @server_app.command("restart")
@@ -680,7 +680,7 @@ def server_restart(
     host: Annotated[str | None, typer.Option(help="Bind host")] = None,
     port: Annotated[int | None, typer.Option(help="Bind port")] = None,
 ) -> None:
-    """Restart the detached Research Ops supervisor."""
+    """Restart the detached Orbitree supervisor."""
     settings = get_settings()
     selected_host = host or settings.host
     selected_port = port or settings.port
@@ -690,7 +690,7 @@ def server_restart(
     except RuntimeError as exc:
         typer.echo(str(exc), err=True)
         raise typer.Exit(1) from exc
-    typer.echo(f"Research Ops restarted (supervisor PID {pid}): http://127.0.0.1:{selected_port}")
+    typer.echo(f"Orbitree restarted (supervisor PID {pid}): http://127.0.0.1:{selected_port}")
 
 
 @server_app.command("restart-when-idle")
@@ -731,7 +731,7 @@ def server_restart_when_idle(
     def probe() -> tuple[RestartBlocker, ...]:
         active = guard.blockers()
         if not _server_healthy(selected_port):
-            active += (RestartBlocker("Research Ops", "health_check_failed"),)
+            active += (RestartBlocker("Orbitree", "health_check_failed"),)
         return active
 
     try:
@@ -839,7 +839,7 @@ def server_migrate_runtime_when_idle(
         raise RuntimeError("Unable to create the local runtime database snapshot")
     pid = _start_detached_server(settings, host, selected_port)
     typer.echo(
-        f"Research Ops moved runtime storage and restarted (supervisor PID {pid}): "
+        f"Orbitree moved runtime storage and restarted (supervisor PID {pid}): "
         f"http://127.0.0.1:{selected_port}"
     )
 
@@ -1294,7 +1294,7 @@ def open_branch(
     if detail["runtime"] == "pi":
         typer.echo(
             "Managed local Pi takeover is not available in this canary. "
-            "Use the Research Ops Web composer and Pi runtime controls.",
+            "Use the Orbitree Web composer and Pi runtime controls.",
             err=True,
         )
         raise typer.Exit(2)
@@ -1346,7 +1346,7 @@ def open_branch(
             bound = True
     command = state.service.codex_terminal_command(branch_id, execution=attempt.execution_config)
     process_args = shlex.split(command)
-    typer.echo(f"Research Ops session {attempt.id}")
+    typer.echo(f"Orbitree session {attempt.id}")
     typer.echo(f"Workspace: {branch.cwd}")
     typer.echo(command)
 
@@ -1377,7 +1377,7 @@ def open_branch(
                     if not is_sqlite_busy(exc):
                         raise
                     typer.echo(
-                        "Research Ops database busy; terminal continues, heartbeat deferred",
+                        "Orbitree database busy; terminal continues, heartbeat deferred",
                         err=True,
                     )
                 last_heartbeat = now
@@ -1446,7 +1446,7 @@ def open_branch(
                     started_at=started_at,
                 )
                 if imported:
-                    typer.echo(f"Imported {len(imported)} Claude turn(s) into Research Ops")
+                    typer.echo(f"Imported {len(imported)} Claude turn(s) into Orbitree")
             except Exception as exc:
                 typer.echo(f"Claude result import deferred: {exc}", err=True)
         try:
@@ -1461,7 +1461,7 @@ def open_branch(
             if not is_sqlite_busy(exc):
                 raise
             typer.echo(
-                "Research Ops database busy; terminal exit will be reconciled by the server",
+                "Orbitree database busy; terminal exit will be reconciled by the server",
                 err=True,
             )
     runtime_label = "Claude" if detail["runtime"] == "claude" else "Codex"

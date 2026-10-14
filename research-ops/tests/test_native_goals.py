@@ -191,7 +191,7 @@ def test_active_native_goal_is_recovered_after_service_restart(
     thread_id = branch["codex_thread_id"]
     fake_codex.goals[thread_id] = {
         "threadId": thread_id,
-        "objective": "Keep working after Research Ops restarts.",
+        "objective": "Keep working after Orbitree restarts.",
         "status": "active",
         "tokenBudget": 100_000,
         "tokensUsed": 12_000,

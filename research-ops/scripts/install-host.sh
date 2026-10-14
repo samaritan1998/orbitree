@@ -34,11 +34,11 @@ if [[ "$INSTALL_SERVICE" -eq 1 ]]; then
       > "$SERVICE_DIR/research-ops.service"
     systemctl --user daemon-reload
     systemctl --user enable --now research-ops.service
-    echo "Research Ops systemd service started."
+    echo "Orbitree systemd service started."
   else
     .venv/bin/rops server start
-    echo "User systemd is unavailable; detached Research Ops supervisor started."
+    echo "User systemd is unavailable; detached Orbitree supervisor started."
   fi
 else
-  echo "Run $ROOT/.venv/bin/rops server start to start Research Ops in the background."
+  echo "Run $ROOT/.venv/bin/rops server start to start Orbitree in the background."
 fi

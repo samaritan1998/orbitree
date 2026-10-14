@@ -1,7 +1,7 @@
 """Environment-side abstraction for the ORS server.
 
 The official OpenReward package provides a decorator-heavy implementation.  A
-small explicit interface is more useful inside Research Ops: domain adapters
+small explicit interface is more useful inside Orbitree: domain adapters
 can delegate to AgentOS, Harbor, SlideForge, or a test double without coupling
 the control plane to any one SDK.
 """

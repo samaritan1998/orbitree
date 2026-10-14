@@ -70,7 +70,7 @@ class AppServerCodexAdapter:
                 {
                     "clientInfo": {
                         "name": "research-ops",
-                        "title": "Research Ops",
+                        "title": "Orbitree",
                         "version": __version__,
                     },
                     "capabilities": {"experimentalApi": True},

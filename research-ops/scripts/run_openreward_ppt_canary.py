@@ -31,10 +31,10 @@ TASK_ID = "research-ops-ppt-runtime-control"
 _DECK_SOURCE = r'''const pptxgen = require("pptxgenjs");
 const pptx = new pptxgen();
 pptx.layout = "LAYOUT_WIDE";
-pptx.author = "Research Ops";
+pptx.author = "Orbitree";
 pptx.subject = "OpenReward PPT runtime control";
 pptx.title = "PPT Runtime Control";
-pptx.company = "Research Ops";
+pptx.company = "Orbitree";
 pptx.lang = "zh-CN";
 pptx.theme = {
   headFontFace: "Noto Sans CJK SC",

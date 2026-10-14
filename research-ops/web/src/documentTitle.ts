@@ -1,7 +1,7 @@
 import type { InspectorTab, Page } from "./router";
 import type { Branch, Program, WorkItem } from "./types";
 
-const PRODUCT_NAME = "Research Ops";
+const PRODUCT_NAME = "Orbitree";
 
 const PAGE_LABELS: Record<Exclude<Page["type"], "program">, string> = {
   today: "今日",

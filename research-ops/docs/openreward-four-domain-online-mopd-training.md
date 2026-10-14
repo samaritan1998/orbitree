@@ -19,7 +19,7 @@ flowchart LR
     Samples --> Train[Trainer / Checkpoint / Weight refresh]
 ```
 
-ORS 提供按域路由的统一接口。Research Ops 的会话、外部任务与结果管理是控制面，不替代训练框架、评测服务或集群调度器。
+ORS 提供按域路由的统一接口。Orbitree 的会话、外部任务与结果管理是控制面，不替代训练框架、评测服务或集群调度器。
 
 ## 数据与服务前置条件
 

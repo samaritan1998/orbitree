@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Run an empty-state Toolathlon control through the Research Ops ORS proxy."""
+"""Run an empty-state Toolathlon control through the Orbitree ORS proxy."""
 
 from __future__ import annotations
 

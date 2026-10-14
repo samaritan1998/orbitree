@@ -192,7 +192,7 @@ class NativeGoalService:
         return await self._with_runtime(branch_id, state)
 
     async def recover_active(self) -> dict[str, int]:
-        """Reattach persisted active Goals after the Research Ops process restarts."""
+        """Reattach persisted active Goals after the Orbitree process restarts."""
         return await self.monitor_once(discover=True)
 
     def _candidates(self, discover: bool) -> list[str]:
@@ -330,7 +330,7 @@ class NativeGoalService:
         state = self._state(target.thread_id, snapshot)
         state.reason = (
             "Codex status is temporarily unavailable. The task may still be running; "
-            "Research Ops will check again before attempting recovery."
+            "Orbitree will check again before attempting recovery."
         )
         return await self._with_runtime(target.branch_id, state)
 

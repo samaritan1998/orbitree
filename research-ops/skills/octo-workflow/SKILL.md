@@ -1,6 +1,6 @@
 ---
 name: octo-workflow
-description: Visualize a requested task plan or local DAG in Octo and return a workflow link for Research Ops. Use when the user asks to draw, publish, or update a workflow visualization; not for routine conversation analysis, job execution, or goal supervision.
+description: Visualize a requested task plan or local DAG in Octo and return a workflow link for Orbitree. Use when the user asks to draw, publish, or update a workflow visualization; not for routine conversation analysis, job execution, or goal supervision.
 ---
 
 # Octo Workflow
@@ -13,7 +13,7 @@ its nodes, submitting jobs, changing Goals, or scheduling automatic updates.
 ## Create or Reuse
 
 - If an appropriate Octo workflow already exists, read that exact ID and reuse its
-  link. Do not duplicate it just to make it appear in Research Ops.
+  link. Do not duplicate it just to make it appear in Orbitree.
 - Otherwise, identify meaningful stages and their real dependencies. Local DAG
   definitions can be translated into nodes and edges; unknown/unstarted stages
   stay `pending`. Only mark `succeeded` when the available evidence supports it.
@@ -34,7 +34,7 @@ its nodes, submitting jobs, changing Goals, or scheduling automatic updates.
 }
 ```
 
-Run the bundled helper with the Research Ops Python environment, which already
+Run the bundled helper with the Orbitree Python environment, which already
 contains `python-dotenv`. Resolve the helper relative to this skill directory:
 
 ```sh
@@ -46,14 +46,14 @@ contains `python-dotenv`. Resolve the helper relative to this skill directory:
 ```
 
 The helper reads `~/.config/research-ops/octo.env` (under `XDG_CONFIG_HOME` when set)
-when present, otherwise the existing Research Ops `.env`. It accepts
+when present, otherwise the existing Orbitree `.env`. It accepts
 `OCTO_BASE_URL` / `OCTO_API_KEY` or their `ROPS_` equivalents. `--env-file` selects
 a different file; environment values take precedence. For an isolated Linux
 user, provision an owner-readable Octo-only file rather than granting access to
 the platform's entire `.env`. Never pass credentials in command arguments or put
 them in the returned link. `CODEX_THREAD_ID`, when
 present, is recorded as provenance for newly created workflows; it is not used to
-change or attach a Research Ops session.
+change or attach a Orbitree session.
 
 `create` reads the exact ID before writing. An identical existing definition is a
 no-op; a different one is a conflict. It never deletes or overwrites an existing
@@ -127,7 +127,7 @@ Include the helper's Markdown link in the assistant reply, outside code fences:
 
 `[Workflow: descriptive title](http://OCTO_HOST/#workflow/WORKFLOW_ID)`
 
-Research Ops extracts this link from recorded conversation text and displays it
+Orbitree extracts this link from recorded conversation text and displays it
 in the Results workflow strip. No extra handoff, memory write, session registration,
 or platform prompt is needed. The browser may require a separate Octo sign-in;
 never embed the API key to bypass it. For a non-Octo visualization, use an HTTP(S)

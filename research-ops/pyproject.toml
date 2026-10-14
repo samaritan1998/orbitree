@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 [project]
 name = "research-ops"
 version = "0.1.0"
-description = "Branching research execution control plane for Codex workflows"
+description = "Orbitree: a self-hosted workspace for AI-assisted research and engineering"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [

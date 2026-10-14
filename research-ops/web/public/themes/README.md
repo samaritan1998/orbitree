@@ -1,6 +1,6 @@
 # Background theme assets
 
-These images are locally hosted, people-free ambience layers. Research Ops does not depend on third-party image requests at runtime.
+These images are locally hosted, people-free ambience layers. Orbitree does not depend on third-party image requests at runtime.
 
 | File | Source | Creator | License |
 | --- | --- | --- | --- |

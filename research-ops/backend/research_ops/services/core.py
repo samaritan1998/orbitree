@@ -118,11 +118,11 @@ class ResearchOpsService:
     def _adapter_for_runtime(self, runtime: str) -> CodexAdapter:
         if runtime == "pi":
             if self.pi is None:
-                raise ConflictError("Pi is not configured for this Research Ops service")
+                raise ConflictError("Pi is not configured for this Orbitree service")
             return self.pi
         if runtime == "claude":
             if self.claude is None:
-                raise ConflictError("Claude is not configured for this Research Ops service")
+                raise ConflictError("Claude is not configured for this Orbitree service")
             return self.claude
         return self.codex
 
@@ -2061,7 +2061,7 @@ class ResearchOpsService:
 
         Fork provisioning and turn execution are separate operations.  Keeping
         the request in the Branch snapshot makes it survive a CLI exit or a
-        Research Ops restart, while the dispatcher below owns the actual Codex
+        Orbitree restart, while the dispatcher below owns the actual Codex
         call.  The stored prompt is redacted before it enters durable state.
         """
         now = datetime.now(UTC)
@@ -3248,7 +3248,7 @@ class ResearchOpsService:
             transport_retry = 0
             while True:
                 try:
-                    # This gates only Research Ops Web turns. It prevents a
+                    # This gates only Orbitree Web turns. It prevents a
                     # collection of Branches from stampeding one account/model
                     # pool, while preserving the user's independent local CLI.
                     await self._acquire_codex_capacity(prepared)

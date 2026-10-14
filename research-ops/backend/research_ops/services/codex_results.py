@@ -643,7 +643,7 @@ class CodexResultSync:
         turn_time = completed.started_at or completed.completed_at
         boundary = _as_utc(binding.bound_at)
         # Codex rollout event timestamps are second-precision, while SQLite
-        # preserves microseconds for the Research Ops binding time. A turn
+        # preserves microseconds for the Orbitree binding time. A turn
         # started in the same second as the binding is the child turn, not a
         # historical parent turn; comparing raw datetimes would drop it.
         return turn_time.replace(microsecond=0) >= boundary.replace(microsecond=0)

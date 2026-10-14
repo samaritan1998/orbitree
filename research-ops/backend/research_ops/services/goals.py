@@ -1,4 +1,4 @@
-"""Durable background Goal orchestration for Research Ops.
+"""Durable background Goal orchestration for Orbitree.
 
 Goals intentionally sit outside a Codex conversation.  A model can inspect a
 goal and perform a bounded checkpoint, but the lifecycle, lease, cadence and
@@ -799,7 +799,7 @@ class GoalSupervisor:
         await asyncio.to_thread(
             self.goals.release_owner,
             self.owner,
-            reason="Research Ops Goal worker stopped; lease released for recovery.",
+            reason="Orbitree Goal worker stopped; lease released for recovery.",
         )
 
     async def _run_agent_tick(self, claim: GoalClaim) -> None:

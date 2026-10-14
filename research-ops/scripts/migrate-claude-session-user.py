@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Move one idle, personal Claude session to a dedicated non-root account.
 
-Run as root. This does not start a conversation, restart Research Ops, or copy
+Run as root. This does not start a conversation, restart Orbitree, or copy
 workspaces. The root-owned session registry is activated only after verification.
 """
 

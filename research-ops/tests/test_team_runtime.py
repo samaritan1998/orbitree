@@ -127,7 +127,7 @@ def test_stop_does_not_signal_an_unrelated_process_with_same_uid(tmp_path):
     try:
         (control / "alice.pid").write_text(str(process.pid))
         (control / "alice.json").write_text(json.dumps({"uid": os.getuid()}))
-        with pytest.raises(ValueError, match="not this Research Ops worker"):
+        with pytest.raises(ValueError, match="not this Orbitree worker"):
             stop_worker(tmp_path, "alice")
         assert process.poll() is None
     finally:

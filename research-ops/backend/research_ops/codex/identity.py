@@ -282,7 +282,7 @@ class CodexIdentityService:
             )
         public.update(
             {
-                "name": public.get("name", "Research Ops API"),
+                "name": public.get("name", "Orbitree API"),
                 "base_url": endpoint,
                 "wire_api": public.get("wire_api", "responses"),
                 "requires_openai_auth": False,

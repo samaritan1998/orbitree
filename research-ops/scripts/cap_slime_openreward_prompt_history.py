@@ -140,7 +140,7 @@ def main() -> int:
         raise SystemExit("--output must differ from --input")
 
     # Keep torch import lazy so the pure transformation helpers remain usable
-    # in the lightweight Research Ops environment; LTP's Slime image provides it.
+    # in the lightweight Orbitree environment; LTP's Slime image provides it.
     import torch
 
     payload = torch.load(args.input, map_location="cpu", weights_only=False)

@@ -4,7 +4,7 @@
 ltp-cli 0.1.6 expects the task-list response under a JSON-encoded ``data``
 field, while the current service returns ``jobs`` at the response root. This
 launcher keeps the official ltp-cli command and show implementation, replacing
-only list rendering with stable JSON for Research Ops ingestion.
+only list rendering with stable JSON for Orbitree ingestion.
 """
 
 from __future__ import annotations

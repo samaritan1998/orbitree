@@ -21,8 +21,8 @@ DEFAULT_TASK_ID = "q0210_0001_bbed2931e2616ef3_open_create_structured"
 _DECK_SOURCE = r'''const pptxgen = require("pptxgenjs");
 const pptx = new pptxgen();
 pptx.layout = "LAYOUT_WIDE";
-pptx.author = "Research Ops OpenReward Control";
-pptx.company = "Research Ops";
+pptx.author = "Orbitree OpenReward Control";
+pptx.company = "Orbitree";
 pptx.subject = "临床输液护理技术进展与操作规范";
 pptx.title = "临床输液护理技术进展与操作规范";
 pptx.lang = "zh-CN";

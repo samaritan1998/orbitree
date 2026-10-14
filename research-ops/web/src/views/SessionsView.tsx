@@ -380,7 +380,7 @@ export default function SessionsView({ programs, onOpenBranch, onOpenWork }: {
                       {programs.map((program) => <option value={program.code} key={program.code}>{program.code} · {program.name}</option>)}
                     </Select>
                   </Field>
-                  <div className="inline-note">Research Ops creates a lightweight WorkItem under this Program so the Session has a durable owner. The directory and its files stay in place.</div>
+                  <div className="inline-note">Orbitree creates a lightweight WorkItem under this Program so the Session has a durable owner. The directory and its files stay in place.</div>
                 </>}
                 {(targets.error || attach.error || create.error) && (
                   <div className="inline-error">{targets.error?.message ?? attach.error?.message ?? create.error?.message}</div>

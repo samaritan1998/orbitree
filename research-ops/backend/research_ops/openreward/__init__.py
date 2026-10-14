@@ -9,7 +9,7 @@ harnesses:
 
 The implementation intentionally does not depend on the optional
 ``openreward`` PyPI package.  It speaks the documented HTTP/SSE wire protocol
-directly, which keeps the Research Ops control plane lightweight and makes the
+directly, which keeps the Orbitree control plane lightweight and makes the
 four adapters usable in local tests before a hosted environment is available.
 """
 

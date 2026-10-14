@@ -65,7 +65,7 @@ curl http://127.0.0.1:8080/health
 curl http://127.0.0.1:8080/list_environments
 ```
 
-Research Ops 主服务中也可以显式打开同一协议（默认关闭）：
+Orbitree 主服务中也可以显式打开同一协议（默认关闭）：
 
 ```bash
 export ROPS_OPENREWARD_ENABLED=true
@@ -115,7 +115,7 @@ def teardown(*, task_spec, state): ...
 调用函数；等接口稳定后再替换成专用 backend，不需要改 ORS server 或训练侧。
 
 仓库现在也提供可配置的 `RemoteServiceBackend`。SWE、PPT、ToolUse 可以直接从
-backend YAML 装配远程 session/action/teardown，不要求在 Research Ops 中引入服务方
+backend YAML 装配远程 session/action/teardown，不要求在 Orbitree 中引入服务方
 SDK。统一 JSON bridge 详见
 [`OPENREWARD_RUNTIME_PROTOCOL.md`](OPENREWARD_RUNTIME_PROTOCOL.md)。真实地址和凭据仅在
 `contract` 模式启动时解析，搭建与测试整个四域系统不依赖这些材料。
@@ -216,7 +216,7 @@ Goblin 当前部分任务只在每个 case 的 `rollout.msg` 中返回“优秀 
 
 共享路径模式还要求 `GOBLIN_REWARD_RESULT_ROOT` 是绝对 CFS 路径。相对路径会被
 Goblin worker 解释为其自身容器内的路径，任务虽然可能显示 `completed`，但
-Research Ops 无法读取 `result.jsonl` 或 `rollout.msg`；配置对象会在启动时拒绝这种
+Orbitree 无法读取 `result.jsonl` 或 `rollout.msg`；配置对象会在启动时拒绝这种
 设置。
 
 ### 早期 bridge canary 记录（2026-07-19）

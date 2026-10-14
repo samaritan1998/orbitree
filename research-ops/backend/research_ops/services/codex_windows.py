@@ -44,7 +44,7 @@ class LocalRollout:
 
 
 class CodexWindowRegistry:
-    """Discover local Codex TUIs and bind them to durable Research Ops work."""
+    """Discover local Codex TUIs and bind them to durable Orbitree work."""
 
     def __init__(
         self,

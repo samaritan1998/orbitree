@@ -45,22 +45,22 @@ const mainBranch: Branch = {
 };
 
 test("uses compact route titles", () => {
-  expect(routeDocumentTitle({ type: "today" })).toBe("今日 | Research Ops");
-  expect(routeDocumentTitle({ type: "sessions" })).toBe("会话 | Research Ops");
-  expect(routeDocumentTitle({ type: "ltp-monitor" })).toBe("任务监控 · 任务与资源 | Research Ops");
-  expect(routeDocumentTitle({ type: "memory" })).toBe("每日复盘 | Research Ops");
-  expect(routeDocumentTitle({ type: "memory", view: "ledger" })).toBe("记忆账本 | Research Ops");
-  expect(routeDocumentTitle({ type: "skills", view: "proposals" })).toBe("技能审核 | Research Ops");
+  expect(routeDocumentTitle({ type: "today" })).toBe("今日 | Orbitree");
+  expect(routeDocumentTitle({ type: "sessions" })).toBe("会话 | Orbitree");
+  expect(routeDocumentTitle({ type: "ltp-monitor" })).toBe("任务监控 · 任务与资源 | Orbitree");
+  expect(routeDocumentTitle({ type: "memory" })).toBe("每日复盘 | Orbitree");
+  expect(routeDocumentTitle({ type: "memory", view: "ledger" })).toBe("记忆账本 | Orbitree");
+  expect(routeDocumentTitle({ type: "skills", view: "proposals" })).toBe("技能审核 | Orbitree");
 });
 
 test("uses the work title for a main branch and branch name for a child", () => {
   expect(programDocumentTitle({ program, workItem, branch: mainBranch })).toBe(
-    "HARN-0001 · PPT trajectory experiment | Research Ops",
+    "HARN-0001 · PPT trajectory experiment | Orbitree",
   );
   expect(programDocumentTitle({
     program,
     workItem,
     branch: { ...mainBranch, id: "branch-child", name: "Online MOPD", slug: "online-mopd", parent_branch_id: mainBranch.id },
     tab: "jobs",
-  })).toBe("HARN-0001 · Online MOPD · Jobs | Research Ops");
+  })).toBe("HARN-0001 · Online MOPD · Jobs | Orbitree");
 });

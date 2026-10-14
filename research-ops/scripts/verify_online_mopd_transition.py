@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Verify the one-step online-MOPD weight/version transition.
 
-This is intentionally JSON-only so it can run on the Research Ops host after
+This is intentionally JSON-only so it can run on the Orbitree host after
 the two LTP jobs finish.  It checks that the post-update episode carries a
 different concrete policy version, finite behavior and teacher logprobs, and
 that its reward/terminal contract remains valid.

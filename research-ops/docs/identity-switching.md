@@ -1,19 +1,19 @@
 # Manual Codex identity switching
 
-Research Ops has three explicit Codex identities: **Company API**, **Personal Codex**, and
+Orbitree has three explicit Codex identities: **Company API**, **Personal Codex**, and
 **Company OneAPI**.
 Existing branches default to Company API. Pi authentication is independent and is not changed.
 
 ## First-time personal login
 
-Run this on the Research Ops server, using the installed `rops` command:
+Run this on the Orbitree server, using the installed `rops` command:
 
 ```sh
 /srv/research-ops/app/.venv/bin/rops auth login
 ```
 
 Complete the device-code flow in your own browser. Never send API keys, login codes, or
-`auth.json` contents through a Research Ops conversation.
+`auth.json` contents through a Orbitree conversation.
 
 The command creates an isolated personal Codex home at
 `$ROPS_CODEX_HOME/research-ops/personal` (normally `~/.codex/research-ops/personal`).
@@ -51,7 +51,7 @@ lowercase and uppercase proxy variables in Personal Codex child processes only. 
 not change Company API, Pi, or the parent Web service environment. Include internal
 hosts in the bypass list as needed by your tools. When unset, shell proxy settings remain
 unchanged. A fresh `rops auth login` reads the new configuration immediately; restart an
-idle Research Ops service before using the changed proxy for Web turns.
+idle Orbitree service before using the changed proxy for Web turns.
 
 On this server, the initial device-code request returned 403 with direct egress and
 offered a device code through the configured deployment proxy. That confirms the login
@@ -61,7 +61,7 @@ that proxy only for Personal Codex.
 Device-code login must also be enabled in your ChatGPT security settings or workspace
 permissions. If the flow remains unavailable, the official alternatives are browser
 login with SSH forwarding or securely transferring a locally created login cache. For
-Research Ops, any personal cache belongs under the isolated personal home described
+Orbitree, any personal cache belongs under the isolated personal home described
 above, never over the primary API `auth.json`. Do not send login codes or credentials in chat.
 
 ## Change a branch
@@ -132,7 +132,7 @@ identity. Changing the preference never terminates a running Web turn or local T
   A branch identity selection does not reroute those background tasks.
 
 Changing identity reuses the same thread. If the selected provider cannot resume or compact its
-history, the error remains visible. Research Ops does not silently change identity, throw away the
+history, the error remains visible. Orbitree does not silently change identity, throw away the
 history, or fork the task to work around an authentication error.
 
 ## API credentials and operations
@@ -176,8 +176,8 @@ migrated to an environment-key provider. An unknown provider is rejected, not re
 different endpoint. Deployments using keyring-only personal authentication need the explicit
 file-backed personal login above; the Web service does not read arbitrary keyring entries.
 
-Backend changes require the normal Research Ops service update. Once deployed, changing a branch
-identity or refreshing personal login does not require a Research Ops restart.
+Backend changes require the normal Orbitree service update. Once deployed, changing a branch
+identity or refreshing personal login does not require a Orbitree restart.
 
 Official references: [Codex authentication](https://learn.chatgpt.com/docs/auth),
 [Codex environment and state locations](https://learn.chatgpt.com/docs/config-file/environment-variables).

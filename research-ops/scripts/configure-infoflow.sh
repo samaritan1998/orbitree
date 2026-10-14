@@ -47,4 +47,4 @@ trap - EXIT
 unset APP_KEY APP_SECRET
 
 echo "Infoflow notifications configured for ${RECIPIENT}."
-echo "Restart Research Ops to load the new environment."
+echo "Restart Orbitree to load the new environment."

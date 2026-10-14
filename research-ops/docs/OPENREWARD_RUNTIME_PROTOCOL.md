@@ -141,7 +141,7 @@ uv run python scripts/run_openreward_server.py \
   --task-catalog /path/to/tasks.yaml
 ```
 
-也可以集成到 Research Ops 主服务：
+也可以集成到 Orbitree 主服务：
 
 ```bash
 export ROPS_OPENREWARD_ENABLED=true

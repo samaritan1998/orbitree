@@ -1,6 +1,6 @@
-# Research Ops 快速上手
+# Orbitree 快速上手
 
-Research Ops 组织 Codex、Claude Code 或 Pi 的实际工作，管理任务、目录、会话、实验和结果。它不是技术情报采集系统，也不要求先从日报创建任务。
+Orbitree 组织 Codex、Claude Code 或 Pi 的实际工作，管理任务、目录、会话、实验和结果。它不是技术情报采集系统，也不要求先从日报创建任务。
 
 ## 先认识界面
 
@@ -27,7 +27,7 @@ Research Ops 组织 Codex、Claude Code 或 Pi 的实际工作，管理任务、
 
 ### 1. 从想法到工作
 
-有一个值得验证的问题时，进入 Research Ops：
+有一个值得验证的问题时，进入 Orbitree：
 
 - 已经知道方向和目标：点击 `New work`，选择 Program，填写一句 Title。
 - 只有模糊想法：点击 `Create scratch work`。它会在 `FREE` 中创建临时工作，不要求先写目标。
@@ -79,7 +79,7 @@ Fork: 用视觉模型做布局重叠校验
 
 ## 目录约定
 
-Research Ops 默认使用可读的 Q3 布局：
+Orbitree 默认使用可读的 Q3 布局：
 
 ```text
 Q3/
@@ -113,6 +113,6 @@ cd research-ops
 .venv/bin/rops doctor
 ```
 
-Research Ops Web 暂时不可用时，Work 和会话仍保留在本机。Codex 会话可在原目录使用 `codex resume`；Claude Code 和 Pi 使用各自的原生恢复方式。服务恢复后，再从 Sessions/Results 继续管理。详细步骤见 [RECOVERY.md](../research-ops/RECOVERY.md)。
+Orbitree Web 暂时不可用时，Work 和会话仍保留在本机。Codex 会话可在原目录使用 `codex resume`；Claude Code 和 Pi 使用各自的原生恢复方式。服务恢复后，再从 Sessions/Results 继续管理。详细步骤见 [RECOVERY.md](../research-ops/RECOVERY.md)。
 
-其他功能的入口、启用条件和边界见 [Research Ops 功能导航](../research-ops/README.md#功能导航)。Sessions 挂载、Handoff 与 Memory 的详细操作见 [使用手册](../research-ops/docs/USER_GUIDE.zh-CN.md)。
+其他功能的入口、启用条件和边界见 [Orbitree 功能导航](../research-ops/README.md#功能导航)。Sessions 挂载、Handoff 与 Memory 的详细操作见 [使用手册](../research-ops/docs/USER_GUIDE.zh-CN.md)。

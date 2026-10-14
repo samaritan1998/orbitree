@@ -606,7 +606,7 @@ class DailyReflectionService:
                 for work_id in work_items
             ],
             "limitations": [
-                "Only activity registered or discovered by Research Ops is visible.",
+                "Only activity registered or discovered by Orbitree is visible.",
                 "Unassigned Codex windows contribute identity/activity metadata, not full turns.",
                 "External systems are represented only by their registered job snapshots.",
             ],
@@ -674,7 +674,7 @@ class DailyReflectionService:
         url = f"{self.settings.infoflow_public_base_url.rstrip('/')}/memory"
         return "\n".join(
             (
-                "Research Ops · 每日总结与反思",
+                "Orbitree · 每日总结与反思",
                 f"日期：{reflection.reflection_date.isoformat()}",
                 f"任务：{_clip(tasks, 800)}",
                 f"总结：{_clip(report.executive_summary, 600)}",

@@ -284,7 +284,7 @@ class AgentOSJobSync:
     def sync_all(self) -> int:
         """Poll active jobs and persist provider status/counts.
 
-        This method is safe to call from the existing Research Ops polling
+        This method is safe to call from the existing Orbitree polling
         thread.  It never downloads signed result URLs automatically.
         """
 

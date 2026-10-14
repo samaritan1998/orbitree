@@ -28,7 +28,7 @@ def test_replacement_and_clear_preserve_goals_with_notifications_off(client, fak
     state = client.app.state.rops
     old = _goal(branch["codex_thread_id"], status="complete")
     fake_codex.goals[branch["codex_thread_id"]] = old
-    # The old Goal was never observed by Research Ops before this replacement.
+    # The old Goal was never observed by Orbitree before this replacement.
     created = client.put(endpoint, json={"objective": "  A new goal\n  "})
     assert created.status_code == 200, created.text
     assert created.json()["goal"]["objective"] == "  A new goal\n  "

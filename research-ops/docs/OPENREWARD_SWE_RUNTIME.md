@@ -13,7 +13,7 @@ SWE 不再使用 `run_openreward_agentos_canary_runtime.py` 中的 `calc.py` 人
 
 ```text
 Slime / policy client
-  -> Research Ops ORS (`/openreward`)
+  -> Orbitree ORS (`/openreward`)
   -> SweSandboxBackend (HTTP)
   -> trusted SWE runtime sidecar
        -> task-scoped policy sandbox (断网、限资源、长期 /testbed)

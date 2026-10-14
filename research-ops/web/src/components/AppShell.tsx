@@ -222,7 +222,7 @@ export default function AppShell({ page, programs, onNavigate, onNewWork, childr
         <div className="brand-lockup">
           <div className="brand-mark"><Navigation20Regular /></div>
           <div className="brand-copy">
-            <strong>Research Ops</strong>
+            <strong>Orbitree</strong>
             <span>Execution workspace</span>
             <small className="timezone-label">{DISPLAY_TIME_ZONE_LABEL}</small>
           </div>
@@ -338,7 +338,7 @@ export default function AppShell({ page, programs, onNavigate, onNewWork, childr
       </aside>
 
       <header className="mobile-bar">
-        <strong>Research Ops</strong>
+        <strong>Orbitree</strong>
         <div className="mobile-bar-actions">
           <AmbienceMenu value={ambience} onChange={changeAmbience} compact />
           <Tooltip content="New work" relationship="label">

@@ -6,7 +6,7 @@ ToolUse 使用现成的官方 ORS 环境
 个 bundled MCP server、每个 ORS session 独立 PostgreSQL clone 和 workspace，终止工具为
 `claim_done`，官方 evaluator 返回二值 reward。
 
-Research Ops 的 `/tooluse` 是 ORS-to-ORS proxy。它转发官方 prompt、任务动态工具、SSE
+Orbitree 的 `/tooluse` 是 ORS-to-ORS proxy。它转发官方 prompt、任务动态工具、SSE
 observation、reward 和 teardown；训练样本只保存 query 与 catalog selector，不保存 evaluator
 源码、数据库种子或服务凭据。
 

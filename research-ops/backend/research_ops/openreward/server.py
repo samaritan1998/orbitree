@@ -179,7 +179,7 @@ class ORSServer:
             for sid in stale:
                 await self._delete(sid)
 
-    def create_app(self, *, title: str = "Research Ops OpenReward") -> FastAPI:
+    def create_app(self, *, title: str = "Orbitree OpenReward") -> FastAPI:
         @asynccontextmanager
         async def lifespan(_app: FastAPI):
             await self.start()
@@ -442,7 +442,7 @@ def create_openreward_app(
     *,
     session_ttl_seconds: float = 900.0,
     api_key_env: str | None = None,
-    title: str = "Research Ops OpenReward",
+    title: str = "Orbitree OpenReward",
 ) -> FastAPI:
     """Create a standalone ORS-compatible FastAPI application."""
 

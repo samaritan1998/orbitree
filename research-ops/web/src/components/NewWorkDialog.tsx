@@ -149,7 +149,7 @@ export default function NewWorkDialog({ open, programs, initialProgram, onClose,
                 <option value="capture">Capture only</option>
               </Select>
             </Field>
-            <Field label="Repository" hint="Optional. A registered Git repository creates a real worktree; otherwise Research Ops creates a scratch repository.">
+            <Field label="Repository" hint="Optional. A registered Git repository creates a real worktree; otherwise Orbitree creates a scratch repository.">
               <Select value={repositoryId} onChange={(_, data) => setRepositoryId(data.value)}>
                 <option value="">Scratch workspace</option>
                 {availableRepositories.map((item) => (

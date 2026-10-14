@@ -1,5 +1,5 @@
 [Unit]
-Description=Research Ops local control plane
+Description=Orbitree local control plane
 After=network.target
 
 [Service]

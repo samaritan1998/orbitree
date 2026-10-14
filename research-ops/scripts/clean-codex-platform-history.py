@@ -46,7 +46,7 @@ def main():
         )
     targets = set(args.thread_id) if args.thread_id else registered
     if targets - registered:
-        parser.error("Only Research Ops registered thread IDs may be cleaned")
+        parser.error("Only Orbitree registered thread IDs may be cleaned")
     paths = {}
     parents = {}
     skipped = []

@@ -106,13 +106,13 @@ def create_team_app(config: TeamConfig, *, transport_factory=None) -> FastAPI:
         for client in clients.values():
             await client.aclose()
 
-    app = FastAPI(title="Research Ops accounts", lifespan=lifespan, docs_url=None, redoc_url=None)
+    app = FastAPI(title="Orbitree accounts", lifespan=lifespan, docs_url=None, redoc_url=None)
     app.state.team_store = store
 
     def authenticated(request) -> dict:
         account = store.session(request.cookies.get(COOKIE, ""))
         if not account:
-            raise HTTPException(401, "Sign in to Research Ops")
+            raise HTTPException(401, "Sign in to Orbitree")
         return account
 
     def admin(request) -> dict:

@@ -1,6 +1,6 @@
 # On-Demand Workflows
 
-Workflow visualization is provided by the `octo-workflow` skill. Research Ops
+Workflow visualization is provided by the `octo-workflow` skill. Orbitree
 does not automatically analyze conversations, invoke an analysis model, or
 inject workflow instructions into a conversation or Goal.
 
@@ -48,7 +48,7 @@ field and does not blindly retry. The helper never executes jobs or deletes
 workflows. See the skill's `SKILL.md` for examples.
 
 The helper reads `ROPS_OCTO_BASE_URL` and `ROPS_OCTO_API_KEY` from the existing
-Research Ops `.env`, overridden by environment variables. It also accepts
+Orbitree `.env`, overridden by environment variables. It also accepts
 `OCTO_BASE_URL` / `OCTO_API_KEY`, `--env-file`, and `--base-url`. Do not pass keys
 on the command line or commit the private `.env`.
 

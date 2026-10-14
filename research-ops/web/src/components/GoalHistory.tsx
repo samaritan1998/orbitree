@@ -44,7 +44,7 @@ export default function GoalHistory({ branchId, legacyGoals = [] }: {
     {legacyGoals.map((goal) => <details className="goal-history-entry" key={goal.id}>
       <summary>
         <span className="goal-history-heading"><strong>{goal.title || goal.objective}</strong>
-          <small>Legacy Research Ops goal · Last status: {labels[goal.status] || goal.status}</small></span>
+          <small>Legacy Orbitree goal · Last status: {labels[goal.status] || goal.status}</small></span>
         <time dateTime={goal.updated_at}>{formatDateTime(goal.updated_at)}</time>
       </summary>
       <div className="goal-history-body">

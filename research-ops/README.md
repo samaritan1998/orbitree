@@ -1,8 +1,8 @@
-# Research Ops
+# Orbitree
 
-Research Ops 是本地优先的研究执行工作台。它把长期方向、任务、分支、AI 会话、工作目录、外部任务和结果关联起来，让一项工作可以继续、分叉和回看。它不负责技术情报采集，也不要求从情报系统创建任务。
+Orbitree 是本地优先的研究执行工作台。它把长期方向、任务、分支、AI 会话、工作目录、外部任务和结果关联起来，让一项工作可以继续、分叉和回看。它不负责技术情报采集，也不要求从情报系统创建任务。
 
-Web 用于查看工作树、可见对话进度和最终结果，也能提交一轮对话。本地 Codex、Claude Code 或 Pi CLI 保留各自的原生交互能力。普通消息原样交给所选运行时；Research Ops 不把 Brief、Memory 或平台规则自动注入提示词。跨运行时交接只有在用户明确选择后才附带上下文。
+Web 用于查看工作树、可见对话进度和最终结果，也能提交一轮对话。本地 Codex、Claude Code 或 Pi CLI 保留各自的原生交互能力。普通消息原样交给所选运行时；Orbitree 不把 Brief、Memory 或平台规则自动注入提示词。跨运行时交接只有在用户明确选择后才附带上下文。
 
 ## 从哪里开始
 
@@ -128,7 +128,7 @@ uv run rops doctor
 ## Unified job submission
 
 `rops job` is the user-facing compute entry point. A user supplies a server-visible LTP bundle,
-Work ID, task kind, and hardware class. There is deliberately no cluster option: Research Ops
+Work ID, task kind, and hardware class. There is deliberately no cluster option: Orbitree
 validates the exact bundle, reads fresh capacity, chooses a hardware-compatible pool, records the
 actual LTP identity internally, and returns only a logical job ID and logical state.
 
@@ -165,7 +165,7 @@ remaining rollout gates are recorded in
 
 The `/clusters` workspace reads the all-user LTP inventory and current Tidal capacity through
 `ltp-control live`. It does not submit, resize, stop, or delete jobs. Run `ltp-control` in an
-environment that also contains the approved `ltp-cli`, or point Research Ops at a source checkout
+environment that also contains the approved `ltp-cli`, or point Orbitree at a source checkout
 and a Python interpreter where both dependencies are available:
 
 ```bash
@@ -202,7 +202,7 @@ states are `Created`, `Pending`, `Running`, and `Failed`; a state seen repeatedl
 notification, not one message per poll. The first successful scan establishes a baseline without
 sending historic task alerts.
 
-Enable it on the Research Ops host after confirming that the same service environment can run the
+Enable it on the Orbitree host after confirming that the same service environment can run the
 two commands above successfully:
 
 ```bash
@@ -223,7 +223,7 @@ or older LTP CLI cannot decode the current list response, point `ROPS_LTP_MONITO
 `scripts/ltp-cli-monitor`; this keeps `ltp-cli show` as status truth and only repairs list discovery.
 You can also use `Track task` in the monitor page to register one exact LTP job name. An existing
 `infoflow-message-group` credential file can be selected with
-`ROPS_INFOFLOW_CREDENTIALS_FILE=/root/.infoflow_config`; Research Ops rejects group/world-readable
+`ROPS_INFOFLOW_CREDENTIALS_FILE=/root/.infoflow_config`; Orbitree rejects group/world-readable
 credential files and never writes their values to its database or logs.
 
 ## Scheduled checks
@@ -264,7 +264,7 @@ automatically starts a child turn; use the child Branch's explicit continuation 
 want it to execute. Use `--parallel` (or `Keep this branch active` in Web) when
 the parent should remain available as the foreground conversation. If a persisted thread
 cannot be forked, provisioning remains `Blocked` and can be retried with
-`rops repair-fork BRANCH_ID --approved-by-user`. Research Ops never substitutes an empty
+`rops repair-fork BRANCH_ID --approved-by-user`. Orbitree never substitutes an empty
 conversation for a failed native fork. `rops open` owns the Session lease, launches or resumes the native TUI,
 binds a newly created Codex thread, synchronizes completed turns, and closes the Session when the TUI
 exits. Raw `codex resume` is retained only as an advanced recovery command.
@@ -274,7 +274,7 @@ branch, Codex thread, transcript, or lineage. Hidden intermediary Branches are c
 visible graph so their descendants remain connected to the nearest visible ancestor. Use the
 Program header's `Hidden N` control to inspect and restore them.
 
-The Web `Sessions` page also discovers Codex TUIs that were started outside Research Ops. It
+The Web `Sessions` page also discovers Codex TUIs that were started outside Orbitree. It
 correlates rollout metadata with local PID, TTY, and cwd without reading process environments or
 Codex credentials. A discovered thread can attach to an existing Branch only when both use the same
 directory, or create a WorkItem that references the existing directory without moving or editing
@@ -319,7 +319,7 @@ Completed Web and local CLI turns can send an idempotent Infoflow single-chat re
 queries can also send a separate alert with the Work, Branch, sanitized failure reason, and Results
 link; this is enabled by default when notifications are enabled and can be switched off with
 `ROPS_INFOFLOW_ERROR_NOTIFICATIONS_ENABLED=false`. Enable
-`ROPS_INFOFLOW_NOTIFICATIONS_ENABLED`, set the recipient email prefix and public Research Ops URL,
+`ROPS_INFOFLOW_NOTIFICATIONS_ENABLED`, set the recipient email prefix and public Orbitree URL,
 and inject the AppKey/AppSecret through the environment-variable names configured by
 `ROPS_INFOFLOW_APP_KEY_ENV` and `ROPS_INFOFLOW_APP_SECRET_ENV`. Notification delivery uses a durable
 outbox: a provider outage never changes the Codex turn result, and successful sends are not repeated.
@@ -360,7 +360,7 @@ Persisted conversation text is passed through credential-pattern redaction.
 
 ### Conversation Transparency
 
-Web queries and Goal objectives are sent verbatim. Research Ops does not prepend policies,
+Web queries and Goal objectives are sent verbatim. Orbitree does not prepend policies,
 append developer/system instructions, inject Brief/Memory/Handoff context, or generate workspace
 `AGENTS.md` files. Opening a local TUI does not send an initial task on the user's behalf.
 Model, reasoning effort, and identity remain explicit user choices; native Codex configuration
@@ -384,14 +384,14 @@ evaluator contracts.
 ### Optional Pi runtime
 
 Pi can be selected as a global canary with `ROPS_CODEX_BACKEND=pi` and
-`ROPS_PI_ENABLED=true`. Research Ops owns the Branch and Session state while Pi owns the model
+`ROPS_PI_ENABLED=true`. Orbitree owns the Branch and Session state while Pi owns the model
 loop. Independent Branches run concurrently by default; set `ROPS_CODEX_MAX_CONCURRENT_TURNS` to
 a positive value only when an operator explicitly wants a deployment-level cap. Each individual
 Branch remains single-writer. Pi's JSONL `steer`, `follow_up`, `abort`, and `agent_settled` events are normalized into the
 existing activity and result records. The default remains the native Codex runtime; see
 [PI_RUNTIME.md](docs/PI_RUNTIME.md) for proxy setup, controls, and the current one-writer session
 boundary. An idle Codex Branch with completed results can also use **Continue with Pi** to create
-an independent Pi child Branch. Research Ops freezes a bounded, redacted handoff from completed
+an independent Pi child Branch. Orbitree freezes a bounded, redacted handoff from completed
 Codex turns; it never attempts to load incompatible Codex JSONL as a Pi session.
 
 ### Claude Code runtime
@@ -399,7 +399,7 @@ Codex turns; it never attempts to load incompatible Codex JSONL as a Pi session.
 Claude Code is available as a per-Branch runtime when the server's `claude` CLI is logged in.
 Choose **Claude Code** in New Work, or use **Fork with Claude** on an idle Branch that already has
 a completed turn. Web turns stream visible text and tool activity into the normal Results view;
-**Start/Continue locally** opens the same Claude session through the native TUI. Research Ops stores
+**Start/Continue locally** opens the same Claude session through the native TUI. Orbitree stores
 the session ID but leaves authentication under `~/.claude` entirely to the CLI.
 
 Cross-runtime forks retain a bounded handoff as Branch metadata for auditability. The handoff is not
@@ -422,7 +422,7 @@ notification integration is enabled, a completion message links back to `/memory
 
 ### AgentOS / Datawheel API
 
-Research Ops integrates with AgentOS through HTTP, not through `miaoda-agent-sdk`. Enable the
+Orbitree integrates with AgentOS through HTTP, not through `miaoda-agent-sdk`. Enable the
 adapter explicitly and provide the bearer token only through the referenced environment variable:
 
 ```bash
@@ -438,7 +438,7 @@ idempotency key. The remote `batch_task_id` is mirrored as an `ExternalJob`, whi
 iteration is stored as an `Execution`. `POST /api/agentos/sync` forces a status refresh and
 `GET /api/agentos/trajectories/{app_id}` reads `coding_messages_all`. Background polling is enabled
 by default when AgentOS is enabled. Request credentials, model API keys, records, and signed result
-URLs are not written to durable Research Ops metadata; only a redacted routing snapshot, record IDs,
+URLs are not written to durable Orbitree metadata; only a redacted routing snapshot, record IDs,
 counts, and provider status are retained.
 
 At Handoff, `Extract reusable skill for review` optionally starts an ephemeral, read-only Codex

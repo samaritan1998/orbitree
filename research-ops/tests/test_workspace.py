@@ -26,7 +26,7 @@ def test_git_worktrees_are_isolated(tmp_path: Path) -> None:
     source.mkdir()
     run("git", "init", cwd=source)
     run("git", "config", "user.email", "research-ops@example.invalid", cwd=source)
-    run("git", "config", "user.name", "Research Ops Test", cwd=source)
+    run("git", "config", "user.name", "Orbitree Test", cwd=source)
     (source / "README.md").write_text("source\n", encoding="utf-8")
     run("git", "add", "README.md", cwd=source)
     run("git", "commit", "-m", "initial", cwd=source)

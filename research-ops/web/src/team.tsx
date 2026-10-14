@@ -44,7 +44,7 @@ export function TeamBoundary({ children }: { children: ReactNode }) {
     window.addEventListener("focus", focused);
     return () => { window.removeEventListener("rops-auth-expired", expired); window.removeEventListener("focus", focused); };
   }, []); // Login bootstrap is intentionally independent of the worker's query cache.
-  if (!session) return <main className="team-login"><h1>Research Ops</h1>{error
+  if (!session) return <main className="team-login"><h1>Orbitree</h1>{error
     ? <><p role="alert">{error}</p><Button onClick={() => void refresh()}>重试</Button></>
     : <Spinner label="正在连接账号服务" />}</main>;
   if (session.enabled && (!session.user || invite)) return <LoginForm invite={invite} onDone={() => {
@@ -68,7 +68,7 @@ function LoginForm({ invite, onDone, onCancel }: { invite: string; onDone: () =>
     } catch (reason) { setError((reason as Error).message); }
     finally { setBusy(false); }
   }}>
-    <h1>Research Ops</h1><h2>{invite ? "激活账号" : "登录"}</h2>
+    <h1>Orbitree</h1><h2>{invite ? "激活账号" : "登录"}</h2>
     {!invite && <Field label="账号" required><Input autoComplete="username" value={username} onChange={(_, data) => setUsername(data.value)} /></Field>}
     <Field label={invite ? "设置密码（至少 12 位）" : "密码"} required><Input type="password" autoComplete={invite ? "new-password" : "current-password"} value={password} onChange={(_, data) => setPassword(data.value)} /></Field>
     {invite && <Field label="确认密码" required><Input type="password" autoComplete="new-password" value={confirmation} onChange={(_, data) => setConfirmation(data.value)} /></Field>}

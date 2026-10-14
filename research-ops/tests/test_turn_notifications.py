@@ -299,7 +299,7 @@ def test_failed_web_conversation_notification_is_sent_once(client, settings) -> 
     assert len(sender.sent) == 1
     recipient, content = sender.sent[0]
     assert recipient == "alice"
-    assert "Research Ops · 对话失败" in content
+    assert "Orbitree · 对话失败" in content
     assert f"[HARN] {work['human_id']} · Verifier experiment" in content
     assert "Branch：Main" in content
     assert "来源：Web" in content

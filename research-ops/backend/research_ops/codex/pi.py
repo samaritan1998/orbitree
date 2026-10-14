@@ -48,7 +48,7 @@ class PiRpcAdapter:
     """Run Pi through its stable JSONL RPC boundary.
 
     The adapter deliberately implements the existing CodexAdapter surface first so
-    Research Ops can switch runtimes without changing Work/Branch state semantics.
+    Orbitree can switch runtimes without changing Work/Branch state semantics.
     Pi-specific steering and queue methods are exposed in addition to that surface.
     """
 
@@ -126,7 +126,7 @@ class PiRpcAdapter:
             session_id=session_id,
             cwd=cwd,
             instructions=instructions,
-            name="Research Ops Pi",
+            name="Orbitree Pi",
         )
         return {"thread": {"id": state.session_id}}
 
@@ -147,7 +147,7 @@ class PiRpcAdapter:
             cwd=cwd,
             instructions=instructions,
             parent_session_id=thread_id,
-            name="Research Ops Pi fork",
+            name="Orbitree Pi fork",
         )
         return {"thread": {"id": state.session_id}}
 
@@ -593,7 +593,7 @@ class PiRpcAdapter:
         try:
             await self.event_handler(method, params)
         except Exception:
-            logger.exception("Research Ops event handler failed for Pi event %s", method)
+            logger.exception("Orbitree event handler failed for Pi event %s", method)
 
     async def _close_process(self, state: _PiProcess) -> None:
         current = asyncio.current_task()

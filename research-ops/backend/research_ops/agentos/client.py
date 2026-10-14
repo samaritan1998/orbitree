@@ -1,6 +1,6 @@
 """Small, credential-safe HTTP client for AgentOS/Datawheel.
 
-Only the stable control-plane operations needed by Research Ops live here:
+Only the stable control-plane operations needed by Orbitree live here:
 submit a Datawheel batch, observe it, resolve a result download, and fetch a
 Miaoda trajectory.  The client intentionally does not know about the SDK or
 about the application's private database/sandbox internals.
@@ -167,7 +167,7 @@ class AgentOSClient:
                 f"AgentOS token is unavailable; configure environment variable {self.token_env}"
             )
         # The installed miaoda-agent-sdk stores ``datawheel_key`` as a full
-        # ``Bearer <token>`` value, while the Research Ops adapter normally
+        # ``Bearer <token>`` value, while the Orbitree adapter normally
         # expects the token body and adds the scheme below.  Accept both forms
         # so a transient SDK-config bridge cannot accidentally send a doubled
         # ``Bearer Bearer`` header.

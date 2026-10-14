@@ -41,7 +41,7 @@ research-ops/bos-cfs-upload-state/
 research-ops/agentos_submit_*.json
 research-ops/web/dist-*/
 research-ops/web/dist.empty-*/
-# Research Ops generated experiment state and source exports
+# Orbitree generated experiment state and source exports
 research-ops/artifacts/
 research-ops/conversions/
 research-ops/evaluations/

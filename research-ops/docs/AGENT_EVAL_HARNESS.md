@@ -1,7 +1,7 @@
 # Agent Eval Harness
 
 The Eval Harness is a durable control plane for rubric-level agent evaluation. It keeps scheduling
-state in Research Ops while evaluator processes remain stateless and replaceable.
+state in Orbitree while evaluator processes remain stateless and replaceable.
 
 ## Execution model
 
@@ -71,7 +71,7 @@ complete cases. Partial cases are excluded until every expected unit in each cla
 
 ## Worker deployment
 
-Run one or more workers on any cluster that can reach Research Ops and the evaluator. One process
+Run one or more workers on any cluster that can reach Orbitree and the evaluator. One process
 can expose several independent slots:
 
 ```bash

@@ -381,7 +381,7 @@ class ClaudeCliAdapter:
             await self._write_control(process, {
                 "type": "control_response", "response": {
                     "subtype": "error", "request_id": native_id,
-                    "error": "Unsupported Research Ops control request",
+                    "error": "Unsupported Orbitree control request",
                 },
             })
             return
@@ -466,7 +466,7 @@ class ClaudeCliAdapter:
             "--effort",
             selected["reasoning_effort"],
             "--name",
-            "Research Ops",
+            "Orbitree",
         ]
         if fresh:
             command.extend(["--session-id", thread_id])

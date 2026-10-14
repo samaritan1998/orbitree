@@ -59,7 +59,7 @@ class Settings(BaseSettings):
     codex_disabled_mcp_servers: list[str] = Field(default_factory=list)
     codex_approval_policy: str | None = None
     codex_sandbox: str | None = None
-    # Research Ops does not impose a Web concurrency limit by default. A
+    # Orbitree does not impose a Web concurrency limit by default. A
     # positive value enables an optional deployment-level semaphore; ``0``
     # means unlimited and lets the provider own admission/back-pressure.
     # Same-Branch turns remain serialized by the Branch lock, while local CLI
@@ -69,7 +69,7 @@ class Settings(BaseSettings):
     codex_capacity_retry_initial_seconds: float = Field(default=30.0, ge=1.0)
     codex_capacity_retry_max_seconds: float = Field(default=300.0, ge=1.0)
     # A gateway disconnect is different from a completed model error. Retry it
-    # only when Research Ops has not observed an item from that turn; otherwise
+    # only when Orbitree has not observed an item from that turn; otherwise
     # a replay could repeat a tool call or an external submission.
     codex_transport_retry_attempts: int = Field(default=1, ge=0, le=3)
     codex_transport_retry_initial_seconds: float = Field(default=5.0, ge=1.0)
@@ -77,7 +77,7 @@ class Settings(BaseSettings):
     codex_request_timeout_seconds: float = 30.0
     codex_fork_timeout_seconds: float = 120.0
     codex_event_line_limit_bytes: int = 8 * 1024 * 1024
-    # Deprecated compatibility setting. Research Ops never rolls threads over
+    # Deprecated compatibility setting. Orbitree never rolls threads over
     # automatically; context management belongs to the native runtime.
     codex_thread_rollover_bytes: int = Field(
         default=0, ge=0, le=64 * 1024 * 1024
@@ -124,7 +124,7 @@ class Settings(BaseSettings):
     pi_event_line_limit_bytes: int = 8 * 1024 * 1024
 
     # Claude Code/Baidu CC is a third, independently authenticated runtime.
-    # Research Ops invokes the installed CLI and never reads or copies its
+    # Orbitree invokes the installed CLI and never reads or copies its
     # account credentials.
     claude_enabled: bool = True
     claude_command: str = "claude"
@@ -246,7 +246,7 @@ class Settings(BaseSettings):
     )
 
     # Turn-completion notifications are opt-in. App credentials stay in the
-    # referenced environment variables and are never persisted by Research Ops.
+    # referenced environment variables and are never persisted by Orbitree.
     infoflow_notifications_enabled: bool = False
     # Failure alerts share the durable Infoflow outbox with completed-turn
     # reminders. This is meaningful only when the parent notification switch
